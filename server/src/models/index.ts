@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes, Optional, Model } from 'sequelize'
 import {instanceSequelize} from '../db/index'
 import {Role} from '../common/types/types'
 
@@ -79,7 +79,20 @@ const Result = instanceSequelize?.define('result', {
     }
 })
 
-const User = instanceSequelize?.define('user', {
+interface NoteAttributes {
+    id: number;
+    name: string;
+    surname: string;
+    email: string;
+    password: string;
+    role: Role;
+    accessToken: string;
+    refreshToken: string
+}
+type NoteCreationAttributes = Optional<NoteAttributes, 'id' | 'name'>;
+
+
+const User = instanceSequelize?.define<Model<NoteAttributes, NoteCreationAttributes>>('user', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -107,6 +120,14 @@ const User = instanceSequelize?.define('user', {
         type: DataTypes.ENUM(Role.USER, Role.ADMIN),
         allowNull: false,
         defaultValue: Role.USER
+    },
+    accessToken: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    refreshToken: {
+        type: DataTypes.STRING,
+        allowNull: false,
     }
 })
 
@@ -150,4 +171,4 @@ if(Question && Quiz && Answer && Hint && Result && User && Statistics) {
     Statistics?.belongsTo(User)
 }
 
-export {Question, Quiz}
+export {Question, Quiz, User}

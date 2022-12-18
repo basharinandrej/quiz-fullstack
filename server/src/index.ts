@@ -1,15 +1,17 @@
-import express, {Express, Router} from 'express'
+import express, {Express} from 'express'
 import dotenv from 'dotenv';
 import {instanceSequelize} from './db/index'
 import {Quiz, Question} from './models/index'
+import router from './routers/index'
+
 
 dotenv.config();
-const router = Router()
 
 const app: Express = express()
 const PORT = process.env.PORT || 3000
 
 app.use(express.json())
+app.use('/api', router)
 
 app.post('/api/quiz', async (req, res) => {
     const { title, timer = null } = req.body
@@ -69,6 +71,7 @@ app.get('/api/question', async (req, res) => {
         console.log('error', error)
     }
 })
+
 app.listen(PORT, async () => {
     try {
         await instanceSequelize?.sync()

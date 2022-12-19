@@ -5,7 +5,6 @@ export interface IPayloadToken {
     surname: string
     email: string
     role: Role
-    password: string
 }
 
 export interface IBodyRegistration {

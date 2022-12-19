@@ -13,7 +13,7 @@ class ServiceUser {
 
         if(!User) return
         const payloadToken: IPayloadToken = {
-            name, surname, email, role, password
+            name, surname, email, role
         }
 
         const candidate = await User.findOne({
@@ -71,8 +71,7 @@ class ServiceUser {
                 name: candidate.name,
                 surname: candidate.surname,
                 email: candidate.email,
-                role: candidate.role,
-                password: candidate.password
+                role: candidate.role
             }
             const accessToken = jwt.sign(
                 payloadToken, 

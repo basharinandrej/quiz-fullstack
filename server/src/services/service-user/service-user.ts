@@ -2,7 +2,7 @@ import {User} from '../../models/index'
 import bcrypt from 'bcrypt'
 import {Request, Response} from 'express'
 import { IPayloadToken, IBodyRegistration } from './types'
-import { isUserGuard } from '../../models/types'
+import { isUserGuard } from '../../common/guards/guards'
 import { createToken } from './utils'
 
 class ServiceUser {
@@ -67,12 +67,11 @@ class ServiceUser {
             const accessToken = createToken(payloadToken, '30m')
             const refreshToken = createToken(payloadToken, '30d')
 
-            const updatedUser = await User.update(
+            await User.update(
                 {accessToken, refreshToken},
                 { where: { id: candidate.id }}
             )
 
-            console.log('updatedUser', updatedUser)
             res.json({
                 accessToken,
                 refreshToken

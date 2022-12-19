@@ -13,36 +13,6 @@ const PORT = process.env.PORT || 3000
 app.use(express.json())
 app.use('/api', router)
 
-app.post('/api/quiz', async (req, res) => {
-    const { title, timer = null } = req.body
-
-    try {
-        console.log('req.body', req.body)
-        if(!Quiz) return
-        const quiz = await Quiz.create({
-            title,
-            timer
-        })
-        res.send(quiz)
-    } catch (error) {
-        console.log('error', error)
-    }
-})
-
-app.get('/api/quiz', async (req, res) => {
-    try {
-        if(!Quiz) return
-        const quizzes = await Quiz.findAndCountAll({
-            include: [
-                {model: Question}
-            ]
-        })
-        res.send(quizzes)
-    } catch (error) {
-        console.log('error', error)
-    }
-})
-
 app.post('/api/question', async (req, res) => {
     const { text, quizId } = req.body
 

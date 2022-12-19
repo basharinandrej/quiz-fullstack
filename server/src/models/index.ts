@@ -153,7 +153,9 @@ if(Question && Quiz && Answer && Hint && Result && User && Statistics) {
     Result.belongsTo(Quiz)
 
     User.hasMany(Quiz)
-    Quiz.belongsTo(User)
+    Quiz.belongsTo(User, {
+        foreignKey: 'recipientId'
+    })
 
     User.hasOne(Statistics)
     Statistics?.belongsTo(User)

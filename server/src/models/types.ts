@@ -15,15 +15,3 @@ export type UserTypeRequire = {
 type UserTypeOption = Optional<UserTypeRequire, 'id'>
 
 export type UserType = Model<UserTypeRequire, UserTypeOption>
-
-export function isUserGuard(user: any): user is UserTypeRequire {
-    if(
-        user.id && user.name 
-        && user.surname && user.email 
-        && user.password && user.role 
-        && user.accessToken && user.refreshToken
-    ) {
-        return true
-    }
-    return false
-}

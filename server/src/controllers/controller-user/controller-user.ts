@@ -12,6 +12,15 @@ class ControllerUser {
             console.log('error', error)
         }
     }
+
+    async login(req: Request, res: Response) {
+        const {email, password} = req.body
+        try {
+            serviceUser.login(req, res, email, password)
+        } catch (error) {
+            console.log('error', error)
+        }
+    }
 }
 
 export default new ControllerUser()

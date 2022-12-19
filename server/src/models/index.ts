@@ -1,5 +1,6 @@
-import { DataTypes, Optional, Model } from 'sequelize'
+import { DataTypes } from 'sequelize'
 import {instanceSequelize} from '../db/index'
+import { UserType } from './types'
 import {Role} from '../common/types/types'
 
 const Quiz = instanceSequelize?.define('quiz', {
@@ -79,20 +80,7 @@ const Result = instanceSequelize?.define('result', {
     }
 })
 
-interface NoteAttributes {
-    id: number;
-    name: string;
-    surname: string;
-    email: string;
-    password: string;
-    role: Role;
-    accessToken: string;
-    refreshToken: string
-}
-type NoteCreationAttributes = Optional<NoteAttributes, 'id' | 'name'>;
-
-
-const User = instanceSequelize?.define<Model<NoteAttributes, NoteCreationAttributes>>('user', {
+const User = instanceSequelize?.define<UserType>('user', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

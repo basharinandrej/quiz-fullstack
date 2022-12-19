@@ -1,11 +1,9 @@
 import {User} from '../../models/index'
 import bcrypt from 'bcrypt'
 import {Request, Response} from 'express'
-import jwt from 'jsonwebtoken'
 import { IPayloadToken, IBodyRegistration } from './types'
 import { isUserGuard } from '../../models/types'
-
-const secretString = process.env.SECRET_KEY || ''
+import { createToken } from './utils'
 
 class ServiceUser {
     async registration(req: Request, res: Response, body: IBodyRegistration) {
@@ -25,16 +23,9 @@ class ServiceUser {
         }
 
         const hashPassword = await bcrypt.hash(password, 9)
-        const accessToken = jwt.sign(
-            payloadToken, 
-            secretString, 
-            { expiresIn: '30m'}
-        )
-        const refreshToken = jwt.sign(
-            payloadToken, 
-            secretString, 
-            { expiresIn: '30d'}
-        )
+        const accessToken = createToken(payloadToken, '30m')
+        const refreshToken = createToken(payloadToken, '30d')
+
         const user = await User.create({
             name,
             surname,
@@ -73,16 +64,8 @@ class ServiceUser {
                 email: candidate.email,
                 role: candidate.role
             }
-            const accessToken = jwt.sign(
-                payloadToken, 
-                secretString, 
-                { expiresIn: '30m'}
-            )
-            const refreshToken = jwt.sign(
-                payloadToken, 
-                secretString, 
-                { expiresIn: '30d'}
-            )
+            const accessToken = createToken(payloadToken, '30m')
+            const refreshToken = createToken(payloadToken, '30d')
 
             const updatedUser = await User.update(
                 {accessToken, refreshToken},

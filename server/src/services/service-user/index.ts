@@ -1,4 +1,4 @@
-import {User} from '../../models/index'
+import {User} from '#models/index'
 import bcrypt from 'bcrypt'
 import {Request, Response} from 'express'
 import { IPayloadToken, IBodyRegistration } from './types'

@@ -1,7 +1,7 @@
 import express, {Express} from 'express'
 import dotenv from 'dotenv';
 import {instanceSequelize} from './db/index'
-import router from './routers/index'
+import router from '#routers/index'
 
 
 dotenv.config();

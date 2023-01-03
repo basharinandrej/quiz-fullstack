@@ -6,12 +6,14 @@ import jwt from 'jsonwebtoken';
 
 class ControllerQuiz {
     async quizAll(req: Request<IReqQuizAll>, res: Response) {
-        const { id, recipient, author } = req.query
-
+        const { id, recipientId, authorId } = req.query
         try {
             const token = req.headers.authorization?.split(' ')[1]
             if(!token) {
                 return res.status(404).send('Heт токена доступа')
+            }
+            if(!recipientId && !authorId) {
+                return res.status(404).send(`Одно из полей обязательно: recipient, author`)
             }
             jwt.verify(token, process.env.SECRET_KEY || '', async (err, decode: any) => {
                 if(err) {
@@ -20,17 +22,17 @@ class ControllerQuiz {
                 if(!isPayloadTokenGuard(decode)) return 
 
                 
-                if(recipient) {
+                if(recipientId) {
                     const quizzes = await Quiz?.findAndCountAll({
                         where: {recipientId: id}
                     })
                     res.send(quizzes)
-                }else if(author) {
+                } else if(authorId) {
                     const quizzes = await Quiz?.findAndCountAll({
-                        where: {userId: id}
+                        where: {userId: authorId}
                     })
                     res.send(quizzes)
-                }
+                } 
             })
 
         } catch (error) {

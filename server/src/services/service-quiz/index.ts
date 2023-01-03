@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 
 class ServiceQuiz {
 
-    async getQuizzeAll(req: Request<IReqQuizAll>, res: Response) {
+    async getQuizzesAll(req: Request<IReqQuizAll>, res: Response) {
         const { recipientId, authorId } = req.query
         const token = req.headers.authorization?.split(' ')[1]
         if(!token) {

@@ -1,7 +1,6 @@
 import express, {Express} from 'express'
 import dotenv from 'dotenv';
 import {instanceSequelize} from './db/index'
-import {Quiz, Question} from './models/index'
 import router from './routers/index'
 
 

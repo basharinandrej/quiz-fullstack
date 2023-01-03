@@ -20,5 +20,10 @@
     "concurrently": "^7.6.0",
     "nodemon": "^2.0.20",
     "typescript": "^4.9.3"
+  },
+  "imports": {
+    "#models": "./src/models/*",
+    "#services": "./src/services/*",
+    "#controllers": "./src/controllers/*"
   }
 }

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { Quiz, User } from '../../models/index'
-import { IReqQuizAll } from '../../controllers/controller-quiz/types'
+import { Quiz, User } from '#models/index'
+import { IReqQuizAll } from '#controllers/controller-quiz/types'
 import { isPayloadTokenGuard, isUserGuard } from '../../common/guards/guards'
 import jwt from 'jsonwebtoken';
 
@@ -70,4 +70,4 @@ class ServiceQuiz {
     }
 }
 
-export const serviceUser = new ServiceQuiz()
+export const serviceQuiz = new ServiceQuiz()

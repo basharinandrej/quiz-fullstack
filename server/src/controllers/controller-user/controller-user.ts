@@ -1,6 +1,6 @@
 import {Request, Response} from 'express'
 import dotenv from 'dotenv';
-import { serviceUser } from '../../services/service-user/service-user'
+import { serviceUser } from '../../services/service-user'
 
 dotenv.config();
 

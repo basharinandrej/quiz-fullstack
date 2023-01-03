@@ -4,7 +4,6 @@ import {Request, Response} from 'express'
 import { IPayloadToken, IBodyRegistration } from './types'
 import { isUserGuard } from '../../common/guards/guards'
 import { createToken } from './utils'
-import { UserTypeRequire } from '../../models/types'
 
 class ServiceUser {
     async registration(req: Request, res: Response, body: IBodyRegistration) {

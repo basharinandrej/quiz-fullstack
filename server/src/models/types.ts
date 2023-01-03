@@ -1,7 +1,7 @@
 import {Role} from '../common/types/types'
 import { Model, Optional } from 'sequelize'
 
-export type UserTypeRequire = {
+export interface UserTypeRequire extends Record<string, unknown> {
     id: number;
     name: string;
     surname: string;

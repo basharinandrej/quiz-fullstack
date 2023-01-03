@@ -4,6 +4,7 @@ import {Request, Response} from 'express'
 import { IPayloadToken, IBodyRegistration } from './types'
 import { isUserGuard } from '../../common/guards/guards'
 import { createToken } from './utils'
+import { UserTypeRequire } from '../../models/types'
 
 class ServiceUser {
     async registration(req: Request, res: Response, body: IBodyRegistration) {
@@ -53,7 +54,17 @@ class ServiceUser {
         if(!candidate) {
             return res.status(404).send(`Нет пользователя с таким email ${email}, зарегестрируйтесь`)
         }
-        if(!isUserGuard(candidate)) return 
+
+        if(!isUserGuard(candidate)) {
+            const emptyFields: string[] = []
+            
+            for(let key in candidate.dataValues) {
+                if( candidate.dataValues[key] === null) {
+                    emptyFields.push(key)
+                }
+            }
+            return res.status(404).send(`пользователь с таким login не корректен. Поле(я) ${emptyFields.join(',')} пусты`)
+        } 
         
         const isPasswordMatch = await bcrypt.compare(password, candidate.password)
 

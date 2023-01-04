@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Quiz, User, Question, Answer } from '#models/index'
+import { Quiz, User, Question, Answer, Hint } from '#models/index'
 import { QuestionTypesRequire } from '#models/types'
 import { IReqQuizAll } from '#controllers/controller-quiz/types'
 import { createAnswers } from './utils'
@@ -29,7 +29,12 @@ class ServiceQuiz {
                 const quizzes = await Quiz?.findAndCountAll({
                     where: {recipientId},
                     include: [
-                        {model: Question, include: [{model: Answer}]},
+                        {model: Question, 
+                            include: [
+                                {model: Answer},
+                                {model: Hint}
+                            ]
+                        },
                     ]
                 })
                 res.send(quizzes)
@@ -37,7 +42,7 @@ class ServiceQuiz {
                 const quizzes = await Quiz?.findAndCountAll({
                     where: {userId: authorId},
                     include: [
-                        {model: Question, include: [{model: Answer}]},
+                        {model: Question, include: [{model: Answer}, {model: Hint}]},
                     ]
                 })
                 res.send(quizzes)
@@ -46,7 +51,7 @@ class ServiceQuiz {
     }
 
     async createQuiz(req: Request, res: Response) {
-        const {title, timer = null, recipientId, questions, textHint} = req.body as IReqCreateQuiz
+        const {title, timer = null, recipientId, questions} = req.body as IReqCreateQuiz
 
         const token = req.headers.authorization?.split(' ')[1]
             if(!token) {
@@ -109,7 +114,19 @@ class ServiceQuiz {
 
                         const createdAnswers: IAnswer[] = []
                         if(Array.isArray(response) && isQuestionGuard(response[0])) {
-                            response.forEach((q, idx) => {
+                            response.forEach( async (q, idx) => {
+                                if( q.dataValues.id ) {
+                                    try {
+                                        const hint = await Hint?.create({
+                                            text: questions[idx].textHint,
+                                            questionId: q.dataValues.id
+                                        })
+                                        console.log('hint', hint)
+                                    } catch (error) {
+                                        console.log(error)
+                                    }
+                                }
+
                                 createAnswers(req, res, questions[idx].answers, q.id)
                                     .then((r) => {
                                         if(Array.isArray(r) && isAnswerGuard(r[0])) {

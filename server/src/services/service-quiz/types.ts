@@ -1,4 +1,4 @@
-export interface IReqCreateQuiz extends IReqQuestions, IReqHint {
+export interface IReqCreateQuiz extends IReqQuestions {
     title: string
     timer?: number
     recipientId: number
@@ -6,7 +6,7 @@ export interface IReqCreateQuiz extends IReqQuestions, IReqHint {
 interface IReqQuestions {
     questions: Array<IReqQuestion>
 }
-interface IReqQuestion extends IAnswers {
+interface IReqQuestion extends IAnswers, IHint {
     textQuestion: string
 }
 
@@ -19,6 +19,7 @@ export interface IAnswer {
 }
 
 
-interface IReqHint {
+interface IHint {
     textHint?: string
+    questionId: number
 }

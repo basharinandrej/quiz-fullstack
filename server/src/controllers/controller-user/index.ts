@@ -23,4 +23,4 @@ class ControllerUser {
     }
 }
 
-export default new ControllerUser()
+export const controllerUser = new ControllerUser()

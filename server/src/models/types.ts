@@ -15,3 +15,17 @@ export interface UserTypeRequire extends Record<string, unknown> {
 type UserTypeOption = Optional<UserTypeRequire, 'id'>
 
 export type UserType = Model<UserTypeRequire, UserTypeOption>
+
+
+export interface QuizTypesRequire extends Record<string, unknown> {
+    id: number
+    title: string
+    userId: number
+    recipientId: number
+}
+
+export interface QuestionTypesRequire extends Record<string, unknown> {
+    id: number
+    text: string
+    quizId: number
+}

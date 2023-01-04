@@ -10,7 +10,7 @@ class ControllerQuiz {
             res.send(error)
         }
     }
-    async create(req: Request, res: Response) {        
+    async create(req: Request, res: Response) {      
         try {
             serviceQuiz.createQuiz(req, res)
         } catch (error) {

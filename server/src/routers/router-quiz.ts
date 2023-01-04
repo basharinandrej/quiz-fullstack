@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import controllerQuiz from '#controllerscontroller-quiz'
+import controllerQuiz from '#controllers/controller-quiz'
 
 const router = Router()
 

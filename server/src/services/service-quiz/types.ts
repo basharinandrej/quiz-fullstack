@@ -12,7 +12,7 @@ interface IReqHint {
     textHint?: string
 }
 
-interface IReqAnswer {
+export interface IReqAnswer {
     textAnswer: string
     isRightAnswer: boolean
 }

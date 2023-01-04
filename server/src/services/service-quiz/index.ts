@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Quiz, User, Question, Answer } from '#models/index'
 import { IReqQuizAll } from '#controllers/controller-quiz/types'
+import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard } from '../../common/guards/guards'
 import { IReqCreateQuiz } from './types'
 import jwt from 'jsonwebtoken';
@@ -86,30 +87,7 @@ class ServiceQuiz {
                 }
 
 
-                if(Array.isArray(answers) && answers.length > 0 ) {
-                    let totalIsRightAnswers = 0
-                    answers.forEach((answer) => {
-                        if(answer.isRightAnswer) {
-                            totalIsRightAnswers++
-                        } else {
-                            return
-                        }
-                    })
-                    if(totalIsRightAnswers > 1) {
-                        return res.status(404).send(`Может быть только один правельный ответ, а у тебя ${totalIsRightAnswers}`)
-                    }
-
-                    answers.forEach( async (answer) => {
-                        await Answer?.create({
-                            text: answer.textAnswer,
-                            questionId: question.id,
-                            isRightAnswer: answer.isRightAnswer
-                        })
-                    })
-                } else {
-                    return res.status(404).send('Не корректный массив с ответами')
-                }
-
+                createAnswers(req, res, answers, question.id)
 
                 res.send(quiz)
             })

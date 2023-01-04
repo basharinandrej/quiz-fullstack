@@ -21,6 +21,14 @@ class ControllerUser {
             console.log('error', error)
         }
     }
+
+    async getOne(req: Request<{id: number}>, res: Response) {
+        try {
+            serviceUser.getOne(req, res)
+        } catch (error) {
+            console.log('error', error)
+        }
+    }
 }
 
 export const controllerUser = new ControllerUser()

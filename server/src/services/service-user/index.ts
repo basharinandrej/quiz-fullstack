@@ -1,4 +1,4 @@
-import {User} from '#models/index'
+import {User, Result} from '#models/index'
 import bcrypt from 'bcrypt'
 import {Request, Response} from 'express'
 import { IPayloadToken, IBodyRegistration } from './types'
@@ -89,6 +89,19 @@ class ServiceUser {
         } else {
             return res.status(404).send(`Неверный пароль`)
         }
+    }
+
+    async getOne(req: Request<{id: number}>, res: Response) {
+        if(!User) return
+        const { id } = req.query
+
+        const candidate = await User.findOne({
+            //@ts-ignore
+            where: { id },
+            include: [{ model: Result }]
+        })
+
+        res.send(candidate)
     }
 }
 

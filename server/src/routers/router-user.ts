@@ -6,5 +6,7 @@ const router = Router()
 
 router.post('/registration', controllerUser.registration)
 router.post('/login', controllerUser.login)
+router.get('/getOne', controllerUser.getOne)
+
 
 export const routerUser = router

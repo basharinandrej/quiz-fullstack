@@ -42,7 +42,11 @@ class ServiceQuiz {
                 const quizzes = await Quiz?.findAndCountAll({
                     where: {userId: authorId},
                     include: [
-                        {model: Question, include: [{model: Answer}, {model: Hint}]},
+                        {model: Question, 
+                            include: [
+                                {model: Answer}, {model: Hint}
+                            ]
+                        },
                     ]
                 })
                 res.send(quizzes)
@@ -117,11 +121,10 @@ class ServiceQuiz {
                             response.forEach( async (q, idx) => {
                                 if( q.dataValues.id ) {
                                     try {
-                                        const hint = await Hint?.create({
+                                        await Hint?.create({
                                             text: questions[idx].textHint,
                                             questionId: q.dataValues.id
                                         })
-                                        console.log('hint', hint)
                                     } catch (error) {
                                         console.log(error)
                                     }

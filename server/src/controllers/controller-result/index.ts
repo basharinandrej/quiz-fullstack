@@ -6,8 +6,8 @@ class ControllerResult {
         servicesResult.create(req, res)
     }
 
-    async getAll(req: Request, res: Response) {
-        servicesResult.getAll(req, res)
+    async getOne(req: Request, res: Response) {
+        servicesResult.getOne(req, res)
     }
 }
 

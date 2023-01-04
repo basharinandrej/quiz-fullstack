@@ -5,6 +5,6 @@ import { controllerResult } from '#controllers/controller-result'
 const router = Router()
 
 router.post('/', controllerResult.create)
-router.get('/', controllerResult.getAll)
+router.get('/getOne', controllerResult.getOne)
 
 export const routerResult = router

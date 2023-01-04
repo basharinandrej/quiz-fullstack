@@ -1,22 +1,24 @@
-export interface IReqCreateQuiz extends IReqQuestion, IReqHint, IReqAnswers {
+export interface IReqCreateQuiz extends IReqQuestions, IReqHint {
     title: string
     timer?: number
     recipientId: number
 }
-
-interface IReqQuestion {
+interface IReqQuestions {
+    questions: Array<IReqQuestion>
+}
+interface IReqQuestion extends IAnswers {
     textQuestion: string
 }
 
-interface IReqHint {
-    textHint?: string
+export interface IAnswers {
+    answers: Array<IAnswer>
 }
-
-export interface IReqAnswer {
+export interface IAnswer {
     textAnswer: string
     isRightAnswer: boolean
 }
 
-export interface IReqAnswers {
-    answers: Array<IReqAnswer>
+
+interface IReqHint {
+    textHint?: string
 }

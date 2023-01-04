@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import {IReqAnswer} from './types'
+import { IAnswer }from './types'
 import { Answer } from '#models/index'
 
-export const createAnswers: ICreateAnswers = (req, res, answers, questionId) => {
-
+export const createAnswers: ICreateAnswers = async (req, res, answers, questionId) => {
     if(Array.isArray(answers) && answers.length > 0 ) {
         let totalIsRightAnswers = 0
         answers.forEach((answer) => {
@@ -17,11 +16,18 @@ export const createAnswers: ICreateAnswers = (req, res, answers, questionId) => 
             return res.status(404).send(`Может быть только один правельный ответ, а у тебя ${totalIsRightAnswers}`)
         }
 
-        answers.forEach( async (answer) => {
-            await Answer?.create({
-                text: answer.textAnswer,
-                questionId: questionId,
-                isRightAnswer: answer.isRightAnswer
+        let totalCreatedAnswers: IAnswer[] = []
+        return new Promise((resolve) => {
+            answers.forEach( async (answer) => {
+                Answer?.create({
+                    text: answer.textAnswer,
+                    questionId: questionId,
+                    isRightAnswer: answer.isRightAnswer
+                })
+                totalCreatedAnswers.push(answer)
+                if(totalCreatedAnswers.length === answers.length) {
+                    resolve(true)
+                }
             })
         })
     } else {
@@ -30,5 +36,5 @@ export const createAnswers: ICreateAnswers = (req, res, answers, questionId) => 
 }
 
 interface ICreateAnswers {
-    (req: Request, res: Response, answers: IReqAnswer[], questionId: number): void
+    (req: Request, res: Response, answers: IAnswer[], questionId: number): Promise<boolean | Response>
 }

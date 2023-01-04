@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Quiz, User, Question, Answer } from '#models/index'
+import { QuestionTypesRequire } from '#models/types'
 import { IReqQuizAll } from '#controllers/controller-quiz/types'
 import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard } from '../../common/guards/guards'
@@ -45,7 +46,7 @@ class ServiceQuiz {
     }
 
     async createQuiz(req: Request, res: Response) {
-        const {title, timer = null, recipientId, textQuestion, textHint, answers} = req.body as IReqCreateQuiz
+        const {title, timer = null, recipientId, questions, textHint} = req.body as IReqCreateQuiz
 
         const token = req.headers.authorization?.split(' ')[1]
             if(!token) {
@@ -76,20 +77,57 @@ class ServiceQuiz {
                     return res.status(500).send('quiz не создался')
                 }
 
+                const createdQuestions: QuestionTypesRequire[] = []
+                
 
-                const question = await Question?.create({
-                    text: textQuestion,
-                    quizId: quiz.id
+                const promiseQuestions = new Promise((resolve, reject) => {
+
+                    if(Array.isArray(questions) && questions.length >= 1) {
+                        questions.forEach( async (questionsItem) => {
+                            const question = await Question?.create({
+                                text: questionsItem.textQuestion,
+                                quizId: quiz.id
+                            })
+
+                            if(!isQuestionGuard(question)) {
+                                reject('qestion не создался')
+                            } else {
+                                createdQuestions.push(question)
+                                if(createdQuestions.length === questions.length) {
+                                    resolve(createdQuestions)
+                                }
+                            }
+                        })
+                    } else {
+                        reject('Не корректный массив с вопросами')
+                    }
                 })
 
-                if(!isQuestionGuard(question)) {
-                    return res.status(500).send('qestion не создался')
-                }
 
+                const answersPromise = new Promise((resolve, reject) => {
+                    promiseQuestions.then((response) => {
 
-                createAnswers(req, res, answers, question.id)
+                        if(Array.isArray(response) && isQuestionGuard(response[0])) {
+                            response.forEach((q, idx) => {
+                                createAnswers(req, res, questions[idx].answers, q.id)
+                                    .then((r)=> {
+                                        resolve(r)
+                                    })
+                            })  
+                        }
+                    })
+                    .catch((err) => {
+                        reject(err)
+                    })
+                })
 
-                res.send(quiz)
+                answersPromise.then((response) => {
+                    if(response === true) {
+                        res.send(createdQuestions)
+                    }
+                }).catch((err) => {
+                    res.status(404).send(err)
+                })
             })
     }
 }

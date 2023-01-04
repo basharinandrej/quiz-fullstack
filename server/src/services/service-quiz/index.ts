@@ -25,12 +25,18 @@ class ServiceQuiz {
             
             if(recipientId) {
                 const quizzes = await Quiz?.findAndCountAll({
-                    where: {recipientId}
+                    where: {recipientId},
+                    include: [
+                        {model: Question, include: [{model: Answer}]},
+                    ]
                 })
                 res.send(quizzes)
             } else if(authorId) {
                 const quizzes = await Quiz?.findAndCountAll({
-                    where: {userId: authorId}
+                    where: {userId: authorId},
+                    include: [
+                        {model: Question, include: [{model: Answer}]},
+                    ]
                 })
                 res.send(quizzes)
             } 

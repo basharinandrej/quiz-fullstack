@@ -26,7 +26,7 @@ export const createAnswers: ICreateAnswers = async (req, res, answers, questionI
                 })
                 totalCreatedAnswers.push(answer)
                 if(totalCreatedAnswers.length === answers.length) {
-                    resolve(true)
+                    resolve(totalCreatedAnswers)
                 }
             })
         })
@@ -36,5 +36,5 @@ export const createAnswers: ICreateAnswers = async (req, res, answers, questionI
 }
 
 interface ICreateAnswers {
-    (req: Request, res: Response, answers: IAnswer[], questionId: number): Promise<boolean | Response>
+    (req: Request, res: Response, answers: IAnswer[], questionId: number): Promise<IAnswer[] | Response>
 }

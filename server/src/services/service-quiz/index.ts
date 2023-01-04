@@ -3,8 +3,8 @@ import { Quiz, User, Question, Answer } from '#models/index'
 import { QuestionTypesRequire } from '#models/types'
 import { IReqQuizAll } from '#controllers/controller-quiz/types'
 import { createAnswers } from './utils'
-import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard } from '../../common/guards/guards'
-import { IReqCreateQuiz } from './types'
+import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '../../common/guards/guards'
+import { IReqCreateQuiz, IAnswer } from './types'
 import jwt from 'jsonwebtoken';
 
 class ServiceQuiz {
@@ -107,11 +107,18 @@ class ServiceQuiz {
                 const answersPromise = new Promise((resolve, reject) => {
                     promiseQuestions.then((response) => {
 
+                        const createdAnswers: IAnswer[] = []
                         if(Array.isArray(response) && isQuestionGuard(response[0])) {
                             response.forEach((q, idx) => {
                                 createAnswers(req, res, questions[idx].answers, q.id)
-                                    .then((r)=> {
-                                        resolve(r)
+                                    .then((r) => {
+                                        if(Array.isArray(r) && isAnswerGuard(r[0])) {
+                                            createdAnswers.push(...r)
+                                        
+                                            if(createdAnswers.length === questions.length * 4) {
+                                                resolve(createdAnswers)
+                                            }
+                                        }
                                     })
                             })  
                         }
@@ -122,8 +129,20 @@ class ServiceQuiz {
                 })
 
                 answersPromise.then((response) => {
-                    if(response === true) {
-                        res.send(createdQuestions)
+                    let positionCursor = 0
+                    if(Array.isArray(response) && isAnswerGuard(response[0])) {
+
+                        const result = createdQuestions.map((q) => {
+                            const newResult = {
+                                //@ts-ignore
+                                ...q.dataValues,
+                                answers: response.slice(positionCursor, positionCursor + 4)
+                            }
+                            positionCursor = positionCursor + 4
+
+                            return newResult
+                        })
+                        res.send(result)
                     }
                 }).catch((err) => {
                     res.status(404).send(err)

@@ -1,5 +1,5 @@
 import {User, Result} from '#models/index'
-import {UserType} from '#models/types'
+import {UserType, UserTypeRequire} from '#models/types'
 import bcrypt from 'bcrypt'
 import {Request, Response} from 'express'
 import { IPayloadToken, IBodyRegistration, IUserForClient } from './types'
@@ -59,8 +59,9 @@ class ServiceUser {
         if(!isUserGuard(candidate)) {
             const emptyFields: string[] = []
             
+
             for(let key in candidate.dataValues) {
-                if( candidate.dataValues[key] === null) {
+                if( candidate.dataValues[key as keyof UserTypeRequire] === null) {
                     emptyFields.push(key)
                 }
             }
@@ -130,7 +131,7 @@ class ServiceUser {
                 name: row.dataValues.name,
                 surname: row.dataValues.surname,
                 email: row.dataValues.email,
-                role: row.dataValues.row,
+                role: row.dataValues.role,
             }
         })
         const userForClient = {

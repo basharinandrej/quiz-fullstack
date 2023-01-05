@@ -2,8 +2,8 @@ import {User, Result} from '#models/index'
 import {UserType} from '#models/types'
 import bcrypt from 'bcrypt'
 import {Request, Response} from 'express'
-import { IPayloadToken, IBodyRegistration } from './types'
-import { IRequestGetAllUsers } from '../../controllers/controller-user/types'
+import { IPayloadToken, IBodyRegistration, IUserForClient } from './types'
+import { IRequestGetAllUsers, IRequestGetOneUser } from '#controllers/controller-user/types'
 import { isUserGuard } from '../../common/guards/guards'
 import { createToken } from './utils'
 
@@ -93,17 +93,27 @@ class ServiceUser {
         }
     }
 
-    async getOne(req: Request<{id: number}>, res: Response) {
+    async getOne(req: IRequestGetOneUser, res: Response) {
         if(!User) return
         const { id } = req.query
 
         const candidate = await User.findOne({
-            //@ts-ignore
             where: { id },
             include: [{ model: Result }]
         })
 
-        res.send(candidate)
+        if(candidate?.dataValues.id) {
+            const candidateForClient: IUserForClient = {
+                id: candidate?.dataValues.id,
+                name: candidate?.dataValues.name,
+                surname: candidate?.dataValues.surname,
+                email: candidate?.dataValues.email,
+                role: candidate?.dataValues.role
+            }
+            res.send(candidateForClient)
+        } else {
+            res.status(404).send('Пользователь не найдён')
+        }
     }
 
     async getAll(req: IRequestGetAllUsers, res: Response) {

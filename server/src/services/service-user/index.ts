@@ -1,7 +1,9 @@
 import {User, Result} from '#models/index'
+import {UserType} from '#models/types'
 import bcrypt from 'bcrypt'
 import {Request, Response} from 'express'
 import { IPayloadToken, IBodyRegistration } from './types'
+import { IRequestGetAllUsers } from '../../controllers/controller-user/types'
 import { isUserGuard } from '../../common/guards/guards'
 import { createToken } from './utils'
 
@@ -104,15 +106,28 @@ class ServiceUser {
         res.send(candidate)
     }
 
-    async getAll(req: Request, res: Response) {
-        const { limit = 10, offset = 0 } = req.query as {limit: number, offset: number} & Record<string, unknown>
+    async getAll(req: IRequestGetAllUsers, res: Response) {
+        const { limit = 10, offset = 0 } = req.query
 
-        const users = await User?.findAndCountAll({
+        const users = await User?.findAndCountAll<UserType>({
             limit,
             offset
         })
-        res.send(users)
 
+        const rowsForClient = users?.rows.map((row) => {
+            return {
+                id: row.dataValues.id,
+                name: row.dataValues.name,
+                surname: row.dataValues.surname,
+                email: row.dataValues.email,
+                role: row.dataValues.row,
+            }
+        })
+        const userForClient = {
+            ...users,
+            rows: rowsForClient
+        }
+        res.send(userForClient)
     }
 }
 

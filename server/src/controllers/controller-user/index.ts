@@ -1,6 +1,7 @@
 import {Request, Response} from 'express'
 import dotenv from 'dotenv';
 import { serviceUser } from '#services/service-user'
+import { IRequestGetAllUsers } from './types'
 
 dotenv.config();
 
@@ -30,7 +31,7 @@ class ControllerUser {
         }
     }
 
-    async getAll(req: Request, res: Response) {
+    async getAll(req: IRequestGetAllUsers, res: Response) {
         try {
             serviceUser.getAll(req, res)
         } catch (error) {

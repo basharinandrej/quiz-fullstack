@@ -29,6 +29,14 @@ class ControllerUser {
             console.log('error', error)
         }
     }
+
+    async getAll(req: Request, res: Response) {
+        try {
+            serviceUser.getAll(req, res)
+        } catch (error) {
+            console.log('error', error)
+        }
+    }
 }
 
 export const controllerUser = new ControllerUser()

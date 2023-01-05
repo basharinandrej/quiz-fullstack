@@ -103,6 +103,17 @@ class ServiceUser {
 
         res.send(candidate)
     }
+
+    async getAll(req: Request, res: Response) {
+        const { limit = 10, offset = 0 } = req.query as {limit: number, offset: number} & Record<string, unknown>
+
+        const users = await User?.findAndCountAll({
+            limit,
+            offset
+        })
+        res.send(users)
+
+    }
 }
 
 export const serviceUser = new ServiceUser()

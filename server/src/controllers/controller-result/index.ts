@@ -1,7 +1,7 @@
 import {Response} from 'express'
 import { serviceResult } from '#services/service-result'
 import { IRequestResultGetOne, IRequestResultCreate } from './types'
-import { ApiError } from '#middlewaresapi-error-middleware'
+import { ApiError } from '#middlewares/api-error-middleware'
 
 class ControllerResult {
     async create(req: IRequestResultCreate, res: Response, next: (err: ApiError) => void) {

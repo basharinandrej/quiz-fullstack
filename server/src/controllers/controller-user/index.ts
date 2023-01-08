@@ -2,7 +2,7 @@ import {Response} from 'express'
 import dotenv from 'dotenv';
 import { serviceUser } from '#services/service-user'
 import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistration } from './types'
-import { ApiError } from '#middlewaresapi-error-middleware';
+import { ApiError } from '#middlewares/api-error-middleware';
 
 dotenv.config();
 

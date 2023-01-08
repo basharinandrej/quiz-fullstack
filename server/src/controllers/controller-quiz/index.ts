@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import {serviceQuiz} from '#services/service-quiz'
 import { IRequestQuizAll } from './types'
-import { ApiError } from "#middlewaresapi-error-middleware";
+import { ApiError } from "#middlewares/api-error-middleware";
 
 class ControllerQuiz {
     async quizAll(req: IRequestQuizAll, res: Response, next: (err: ApiError) => void) {

@@ -29,7 +29,7 @@
     "#controllers": "./dist/controllers/",
     "#routers": "./dist/routers/",
     "#guards": "./dist/common/guards/index",
-    "#middlewares*": "./dist/middlewares"
+    "#middlewares": "./dist/middlewares"
 
   }
 }

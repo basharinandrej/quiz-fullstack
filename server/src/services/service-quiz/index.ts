@@ -6,7 +6,7 @@ import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '#guards'
 import { IRequestQuizCreate, IAnswer } from './types'
 import jwt from 'jsonwebtoken';
-import { ApiError } from "#middlewaresapi-error-middleware";
+import { ApiError } from "#middlewares/api-error-middleware";
 
 class ServiceQuiz {
     async getQuizzesAll(req: IRequestQuizAll, res: Response, next: (err: ApiError) => void) {

@@ -3,7 +3,7 @@ import express, {Express} from 'express'
 import dotenv from 'dotenv';
 import {instanceSequelize} from './db/index'
 import router from './routers/index'
-import {errorMiddleware} from './middlewares/api-error-middleware'
+import {errorMiddleware} from '#middlewares/api-error-middleware'
 
 dotenv.config();
 

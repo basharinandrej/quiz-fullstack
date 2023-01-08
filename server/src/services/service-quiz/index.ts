@@ -22,8 +22,9 @@ class ServiceQuiz {
             if(err instanceof Error) {
                 return next(ApiError.internal(err?.message))
             }
-            if(!isPayloadTokenGuard(decode)) return 
-
+            if(!isPayloadTokenGuard(decode)) {
+                return next(ApiError.badRequest(`Не корректный payload у токена ${JSON.stringify(decode)}`))
+            } 
             
             if(recipientId) {
                 const quizzes = await Quiz?.findAndCountAll({

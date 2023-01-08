@@ -3,6 +3,7 @@ import {Statistics, Quiz} from '#models/index'
 import { StatisticsType, QuizType } from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware';
 import {IRequestResultCreate} from '#controllers/controller-result/types'
+import { IRequestStatisticAll } from '#controllers/controller-statistics/types'
 
 interface IRequest extends IRequestResultCreate {}
 
@@ -64,6 +65,22 @@ class ServiceStatistics {
         })
 
         return updatedStatistics
+    }
+
+    async getAll(req: IRequestStatisticAll, res: Response, next: (err: ApiError) => void) {
+        const {limit = 10, offset = 0} = req.query
+        try {
+            const statistics = await Statistics?.findAndCountAll<StatisticsType>({
+                limit,
+                offset
+            })
+
+            res.send(statistics)
+        } catch (error) { 
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
+        }
     }
 }
 

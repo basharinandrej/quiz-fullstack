@@ -4,11 +4,12 @@ import bcrypt from 'bcrypt'
 import {Response} from 'express'
 import { IPayloadToken, IUserForClient } from './types'
 import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistration } from '#controllers/controller-user/types'
+import { ApiError } from '../../middleware/api-error-middleware'
 import { isUserGuard } from '#guards'
 import { createToken } from './utils'
 
 class ServiceUser {
-    async registration(req: IRequestRegistration, res: Response,) {
+    async registration(req: IRequestRegistration, res: Response, next: (err: ApiError) => void) {
         const {name, surname, email, role, password} = req.body
 
         if(!User) return
@@ -21,7 +22,7 @@ class ServiceUser {
         })
 
         if(candidate) {
-            return res.status(404).send(`Пользователь с таким email ${email} уже есть`)
+            return next(ApiError.badRequest(`Пользователь с таким email ${email} уже есть`))
         }
 
         const hashPassword = await bcrypt.hash(password, 9)

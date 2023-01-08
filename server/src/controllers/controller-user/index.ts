@@ -6,9 +6,9 @@ import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistr
 dotenv.config();
 
 class ControllerUser {
-    async registration(req: IRequestRegistration, res: Response) {
+    async registration(req: IRequestRegistration, res: Response, next: () => void) {
         try {
-            serviceUser.registration(req, res)
+            serviceUser.registration(req, res, next)
         } catch (error) {
             console.log('error', error)
         }

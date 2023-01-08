@@ -4,10 +4,10 @@ import { IAnswer } from '../../services/service-quiz/types';
 
 export function isUserGuard(user: any): user is UserTypeRequire {
     if(
-        user.id && user.name 
-        && user.surname && user.email 
-        && user.password && user.role 
-        && user.accessToken && user.refreshToken
+        user?.id && user?.name 
+        && user?.surname && user?.email 
+        && user?.password && user?.role 
+        && user?.accessToken && user?.refreshToken
     ) {
         return true
     }

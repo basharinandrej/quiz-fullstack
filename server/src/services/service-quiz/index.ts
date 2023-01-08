@@ -57,6 +57,7 @@ class ServiceQuiz {
     async createQuiz(req: IRequestQuizCreate, res: Response, next: (err: ApiError) => void) {
         const {title, timer = null, recipientId, questions} = req.body
 
+        console.log('title', title)
         const token = req.headers.authorization?.split(' ')[1]
             if(!token) {
                 return next(ApiError.badRequest('Heт токена доступа'))
@@ -68,13 +69,21 @@ class ServiceQuiz {
                         return next(ApiError.internal(err.message))
                     }
                 }
-                if(!isPayloadTokenGuard(decode)) return 
+                if(!isPayloadTokenGuard(decode)) {
+                    return next(ApiError.badRequest(`Не корректный payload у токена ${JSON.stringify(decode)}`))
+                } 
 
                 const user = await User?.findOne({
                     where: {email: decode?.email}
                 })
+                const recipientCandidate = await User?.findOne({
+                    where: {id: recipientId}
+                })
                 if(!isUserGuard(user)) {
                     return next(ApiError.badRequest('Нет пользователя с таким email'))
+                }
+                if(!isUserGuard(recipientCandidate)) {
+                    return next(ApiError.badRequest('Нет recipient с таким id'))
                 }
 
                 const quiz = await Quiz?.create({

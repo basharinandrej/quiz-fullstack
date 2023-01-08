@@ -1,12 +1,13 @@
 import {Request, Response} from 'express'
 import { serviceResult } from '#services/service-result'
+import { IRequestResultGetOne, IRequestResultCreate } from './types'
 
 class ControllerResult {
-    async create(req: Request, res: Response) {
+    async create(req: IRequestResultCreate, res: Response) {
         serviceResult.create(req, res)
     }
 
-    async getOne(req: Request, res: Response) {
+    async getOne(req: IRequestResultGetOne, res: Response) {
         serviceResult.getOne(req, res)
     }
 }

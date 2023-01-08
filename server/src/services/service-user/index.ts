@@ -1,10 +1,10 @@
 import {User, Result} from '#models/index'
 import {UserType, UserTypeRequire} from '#models/types'
+import { ApiError } from '#middlewares/api-error-middleware'
 import bcrypt from 'bcrypt'
 import {Response} from 'express'
 import { IPayloadToken, IUserForClient } from './types'
 import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistration } from '#controllers/controller-user/types'
-import { ApiError } from '../../middleware/api-error-middleware'
 import { isUserGuard } from '#guards'
 import { createToken } from './utils'
 

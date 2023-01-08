@@ -28,6 +28,8 @@
     "#services": "./dist/services/",
     "#controllers": "./dist/controllers/",
     "#routers": "./dist/routers/",
-    "#guards": "./dist/common/guards/index"
+    "#guards": "./dist/common/guards/index",
+    "#middlewares*": "./dist/middlewares"
+
   }
 }

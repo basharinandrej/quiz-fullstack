@@ -2,13 +2,11 @@ import {Response} from 'express'
 import {Statistics, Quiz} from '#models/index'
 import { StatisticsType, QuizType } from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware';
-import {IRequestResultCreate} from '#controllers/controller-result/types'
-import { IRequestStatisticAll } from '#controllers/controller-statistics/types'
+import { IRequestStatisticAll, IRequestStatisticCreate } from '#controllers/controller-statistics/types'
 
-interface IRequest extends IRequestResultCreate {}
 
 class ServiceStatistics {
-    async create(req: IRequest, res: Response, next: (err: ApiError) => void) {
+    async create(req: IRequestStatisticCreate, res: Response, next: (err: ApiError) => void) {
         const {
             userId
         } = req.body
@@ -20,19 +18,20 @@ class ServiceStatistics {
         })
 
         if(candadateStatistic) {
+            next(ApiError.internal(`статистика у пользователя с id ${userId} уже есть`))
             return
         }
         const statistics = await Statistics?.create({
             totalQuizzesSolved: 0,
             totalQuizzesMade: 0,
-            totalRightanswers: 0,
+            totalRightAnswers: 0,
             totalQuestions: 0,
             userId
         })
         res.send(statistics)
     }
 
-    async update(req: IRequest, res: Response, next: (err: ApiError) => void) {
+    async update(req: IRequestStatisticCreate, res: Response, next: (err: ApiError) => void) {
         const {
             userId,
             totalRightAnswers,

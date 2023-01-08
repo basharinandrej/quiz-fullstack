@@ -120,6 +120,11 @@ const User = instanceSequelize?.define<UserType>('user', {
 })
 
 const Statistics = instanceSequelize?.define('statistics', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     totalQuizzesSolved: {
         type: DataTypes.INTEGER
     },

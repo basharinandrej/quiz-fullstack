@@ -1,7 +1,7 @@
 import {Request, Response} from 'express'
 import { Result } from '#models/index'
 
-class ServicesResult {
+class ServiceResult {
     async create(req: Request, res: Response) {
         const {
             totalRightAnswers,
@@ -54,4 +54,4 @@ class ServicesResult {
     }
 }
 
-export const servicesResult = new ServicesResult()
+export const serviceResult = new ServiceResult()

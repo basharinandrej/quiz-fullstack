@@ -1,15 +1,15 @@
 import {User, Result} from '#models/index'
 import {UserType, UserTypeRequire} from '#models/types'
 import bcrypt from 'bcrypt'
-import {Request, Response} from 'express'
-import { IPayloadToken, IBodyRegistration, IUserForClient } from './types'
-import { IRequestGetAllUsers, IRequestGetOneUser } from '#controllers/controller-user/types'
+import {Response} from 'express'
+import { IPayloadToken, IUserForClient } from './types'
+import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistration } from '#controllers/controller-user/types'
 import { isUserGuard } from '../../common/guards/guards'
 import { createToken } from './utils'
 
 class ServiceUser {
-    async registration(req: Request, res: Response, body: IBodyRegistration) {
-        const {name, surname, email, role, password} = body
+    async registration(req: IRequestRegistration, res: Response,) {
+        const {name, surname, email, role, password} = req.body
 
         if(!User) return
         const payloadToken: IPayloadToken = {
@@ -45,8 +45,10 @@ class ServiceUser {
         })
     }
 
-    async login(req: Request, res: Response, email: string, password: string) {
+    async login(req: IRequestLogin, res: Response) {
         if(!User) return
+        const {email, password} = req.body
+
 
         const candidate = await User.findOne({
             where: {email}

@@ -1,13 +1,13 @@
 import {Request, Response} from 'express'
-import { servicesResult } from '#services/service-result'
+import { serviceResult } from '#services/service-result'
 
 class ControllerResult {
     async create(req: Request, res: Response) {
-        servicesResult.create(req, res)
+        serviceResult.create(req, res)
     }
 
     async getOne(req: Request, res: Response) {
-        servicesResult.getOne(req, res)
+        serviceResult.getOne(req, res)
     }
 }
 

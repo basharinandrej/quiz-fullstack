@@ -1,23 +1,22 @@
-import {Request, Response} from 'express'
+import {Response} from 'express'
 import dotenv from 'dotenv';
 import { serviceUser } from '#services/service-user'
-import { IRequestGetAllUsers, IRequestGetOneUser } from './types'
+import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistration } from './types'
 
 dotenv.config();
 
 class ControllerUser {
-    async registration(req: Request, res: Response) {
+    async registration(req: IRequestRegistration, res: Response) {
         try {
-            serviceUser.registration(req, res, req.body)
+            serviceUser.registration(req, res)
         } catch (error) {
             console.log('error', error)
         }
     }
 
-    async login(req: Request, res: Response) {
-        const {email, password} = req.body
+    async login(req: IRequestLogin, res: Response) {
         try {
-            serviceUser.login(req, res, email, password)
+            serviceUser.login(req, res)
         } catch (error) {
             console.log('error', error)
         }

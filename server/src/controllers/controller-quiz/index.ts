@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import {serviceQuiz} from '#services/service-quiz'
-import { IReqQuizAll } from './types'
+import { IRequestQuizAll } from './types'
 
 class ControllerQuiz {
-    async quizAll(req: Request<IReqQuizAll>, res: Response) {
+    async quizAll(req: IRequestQuizAll, res: Response) {
         try {
             serviceQuiz.getQuizzesAll(req, res)
         } catch (error) {

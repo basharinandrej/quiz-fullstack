@@ -1,5 +1,8 @@
-export interface IReqQuizAll {
-    id:number, 
-    recipient: boolean, 
-    author: boolean
+import { Request } from "express";
+
+export interface IQueryQuizAll {
+    recipientId?:number, 
+    authorId?: boolean, 
 }
+
+export interface IRequestQuizAll extends Request<unknown, unknown, unknown, IQueryQuizAll> {}

@@ -1,15 +1,14 @@
 import { Request, Response } from "express";
 import { Quiz, User, Question, Answer, Hint } from '#models/index'
 import { QuestionTypesRequire } from '#models/types'
-import { IReqQuizAll } from '#controllers/controller-quiz/types'
+import { IRequestQuizAll } from '#controllers/controller-quiz/types'
 import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '../../common/guards/guards'
-import { IReqCreateQuiz, IAnswer } from './types'
+import { IRequestQuizCreate, IAnswer } from './types'
 import jwt from 'jsonwebtoken';
 
 class ServiceQuiz {
-
-    async getQuizzesAll(req: Request<IReqQuizAll>, res: Response) {
+    async getQuizzesAll(req: IRequestQuizAll, res: Response) {
         const { recipientId, authorId } = req.query
         const token = req.headers.authorization?.split(' ')[1]
         if(!token) {
@@ -54,8 +53,8 @@ class ServiceQuiz {
         })
     }
 
-    async createQuiz(req: Request, res: Response) {
-        const {title, timer = null, recipientId, questions} = req.body as IReqCreateQuiz
+    async createQuiz(req: IRequestQuizCreate, res: Response) {
+        const {title, timer = null, recipientId, questions} = req.body
 
         const token = req.headers.authorization?.split(' ')[1]
             if(!token) {
@@ -130,7 +129,7 @@ class ServiceQuiz {
                                     }
                                 }
 
-                                createAnswers(req, res, questions[idx].answers, q.id)
+                                createAnswers(res, questions[idx].answers, q.id)
                                     .then((r) => {
                                         if(Array.isArray(r) && isAnswerGuard(r[0])) {
                                             createdAnswers.push(...r)

@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 export interface IReqCreateQuiz extends IReqQuestions {
     title: string
     timer?: number
@@ -23,3 +25,5 @@ interface IHint {
     textHint?: string
     questionId: number
 }
+
+export interface IRequestQuizCreate extends Request<unknown, unknown, IReqCreateQuiz> {}

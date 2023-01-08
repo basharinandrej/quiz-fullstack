@@ -7,11 +7,13 @@ import { ApiError } from '#middlewaresapi-error-middleware';
 dotenv.config();
 
 class ControllerUser {
-    async registration(req: IRequestRegistration, res: Response, next: () => void) {
+    async registration(req: IRequestRegistration, res: Response, next: (err: ApiError) => void) {
         try {
             serviceUser.registration(req, res, next)
         } catch (error) {
-            console.log('error', error)
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
         }
     }
 
@@ -19,7 +21,9 @@ class ControllerUser {
         try {
             serviceUser.login(req, res, next)
         } catch (error) {
-            console.log('error', error)
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
         }
     }
 
@@ -27,15 +31,19 @@ class ControllerUser {
         try {
             serviceUser.getOne(req, res, next)
         } catch (error) {
-            console.log('error', error)
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
         }
     }
 
-    async getAll(req: IRequestGetAllUsers, res: Response) {
+    async getAll(req: IRequestGetAllUsers, res: Response, next: (err: ApiError) => void) {
         try {
             serviceUser.getAll(req, res)
         } catch (error) {
-            console.log('error', error)
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
         }
     }
 }

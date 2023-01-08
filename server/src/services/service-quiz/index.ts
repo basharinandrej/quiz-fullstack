@@ -3,7 +3,7 @@ import { Quiz, User, Question, Answer, Hint } from '#models/index'
 import { QuestionTypesRequire } from '#models/types'
 import { IRequestQuizAll } from '#controllers/controller-quiz/types'
 import { createAnswers } from './utils'
-import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '../../common/guards/guards'
+import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '#guards'
 import { IRequestQuizCreate, IAnswer } from './types'
 import jwt from 'jsonwebtoken';
 

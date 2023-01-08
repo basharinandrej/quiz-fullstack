@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 import {Response} from 'express'
 import { IPayloadToken, IUserForClient } from './types'
 import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistration } from '#controllers/controller-user/types'
-import { isUserGuard } from '../../common/guards/guards'
+import { isUserGuard } from '#guards'
 import { createToken } from './utils'
 
 class ServiceUser {

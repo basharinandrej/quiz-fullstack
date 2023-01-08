@@ -27,6 +27,7 @@
     "#models": "./dist/models/",
     "#services": "./dist/services/",
     "#controllers": "./dist/controllers/",
-    "#routers": "./dist/routers/"
+    "#routers": "./dist/routers/",
+    "#guards": "./dist/common/guards/index"
   }
 }

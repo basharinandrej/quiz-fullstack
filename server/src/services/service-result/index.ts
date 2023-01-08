@@ -1,8 +1,9 @@
 import {Request, Response} from 'express'
 import { Result } from '#models/index'
+import { IRequestResultCreate, IRequestResultGetOne } from '#controllers/controller-result/types'
 
 class ServiceResult {
-    async create(req: Request, res: Response) {
+    async create(req: IRequestResultCreate, res: Response) {
         const {
             totalRightAnswers,
             totalQuestions,
@@ -22,13 +23,12 @@ class ServiceResult {
 
             res.send(result)
         } catch (error) {
-            console.log(error)
             res.status(500).send(error)
         }
 
     }
 
-    async getOne(req: Request, res: Response) {
+    async getOne(req: IRequestResultGetOne, res: Response) {
         const {userId, quizId} = req.query
 
         try {

@@ -75,7 +75,7 @@ const Result = instanceSequelize?.define('result', {
         allowNull: false
     },
     rating: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT,
         allowNull: false
     }
 })

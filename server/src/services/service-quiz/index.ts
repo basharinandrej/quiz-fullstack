@@ -6,20 +6,21 @@ import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '#guards'
 import { IRequestQuizCreate, IAnswer } from './types'
 import jwt from 'jsonwebtoken';
+import { ApiError } from "#middlewaresapi-error-middleware";
 
 class ServiceQuiz {
-    async getQuizzesAll(req: IRequestQuizAll, res: Response) {
+    async getQuizzesAll(req: IRequestQuizAll, res: Response, next: (err: ApiError) => void) {
         const { recipientId, authorId } = req.query
         const token = req.headers.authorization?.split(' ')[1]
         if(!token) {
-            return res.status(404).send('Heт токена доступа')
+            return next(ApiError.badRequest('Heт токена доступа'))
         }
         if(!recipientId && !authorId) {
-            return res.status(404).send(`Одно из полей обязательно: recipient, author`)
+            return next(ApiError.badRequest('Одно из полей обязательно: recipient, author'))
         }
         jwt.verify(token, process.env.SECRET_KEY || '', async (err, decode: any) => {
-            if(err) {
-                return res.status(404).send(`${err}`)
+            if(err instanceof Error) {
+                return next(ApiError.internal(err?.message))
             }
             if(!isPayloadTokenGuard(decode)) return 
 
@@ -53,17 +54,19 @@ class ServiceQuiz {
         })
     }
 
-    async createQuiz(req: IRequestQuizCreate, res: Response) {
+    async createQuiz(req: IRequestQuizCreate, res: Response, next: (err: ApiError) => void) {
         const {title, timer = null, recipientId, questions} = req.body
 
         const token = req.headers.authorization?.split(' ')[1]
             if(!token) {
-                return res.status(404).send('Heт токена доступа')
+                return next(ApiError.badRequest('Heт токена доступа'))
             }
 
             jwt.verify(token, process.env.SECRET_KEY || '', async (err, decode: any) => {
                 if(err) {
-                    return res.status(404).send(`${err}`)
+                    if(err instanceof Error) {
+                        return next(ApiError.internal(err.message))
+                    }
                 }
                 if(!isPayloadTokenGuard(decode)) return 
 
@@ -71,7 +74,7 @@ class ServiceQuiz {
                     where: {email: decode?.email}
                 })
                 if(!isUserGuard(user)) {
-                    return res.status(404).send(`Нет пользователя с таким email`)
+                    return next(ApiError.badRequest('Нет пользователя с таким email'))
                 }
 
                 const quiz = await Quiz?.create({
@@ -82,7 +85,8 @@ class ServiceQuiz {
                 })
 
                 if(!isQuizGuard(quiz)) {
-                    return res.status(500).send('quiz не создался')
+                    return next(ApiError.internal('quiz не создался'))
+
                 }
 
                 const createdQuestions: QuestionTypesRequire[] = []
@@ -164,7 +168,7 @@ class ServiceQuiz {
                         res.send(result)
                     }
                 }).catch((err) => {
-                    res.status(404).send(err)
+                    next(ApiError.badRequest(err))
                 })
             })
     }

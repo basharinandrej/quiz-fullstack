@@ -6,11 +6,12 @@ import {Response} from 'express'
 import { IPayloadToken, IUserForClient } from './types'
 import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistration } from '#controllers/controller-user/types'
 import { isUserGuard } from '#guards'
+import { Role } from '../../common/types/types'
 import { createToken } from './utils'
 
 class ServiceUser {
     async registration(req: IRequestRegistration, res: Response, next: (err: ApiError) => void) {
-        const {name, surname, email, role, password} = req.body
+        const {name, surname, email, role = Role.USER, password} = req.body
 
         if(!User) return
         const payloadToken: IPayloadToken = {

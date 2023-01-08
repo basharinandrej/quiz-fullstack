@@ -161,4 +161,4 @@ if(Question && Quiz && Answer && Hint && Result && User && Statistics) {
     Statistics?.belongsTo(User)
 }
 
-export {Question, Quiz, User, Answer, Hint, Result}
+export {Question, Quiz, User, Answer, Hint, Result, Statistics}

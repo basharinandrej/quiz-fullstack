@@ -13,7 +13,7 @@ class ControllerQuiz {
             }
         }
     }
-    async create(req: Request, res: Response, next: (err: ApiError) => void) {      
+    async create(req: Request, res: Response, next: (err: ApiError) => void) {
         try {
             serviceQuiz.createQuiz(req, res, next)
         } catch (error) {

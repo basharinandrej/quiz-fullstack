@@ -57,7 +57,6 @@ class ServiceQuiz {
     async createQuiz(req: IRequestQuizCreate, res: Response, next: (err: ApiError) => void) {
         const {title, timer = null, recipientId, questions} = req.body
 
-        console.log('title', title)
         const token = req.headers.authorization?.split(' ')[1]
             if(!token) {
                 return next(ApiError.badRequest('Heт токена доступа'))

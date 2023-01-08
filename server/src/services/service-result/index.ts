@@ -1,6 +1,7 @@
 import {Response} from 'express'
 import { Result } from '#models/index'
 import { IRequestResultCreate, IRequestResultGetOne } from '#controllers/controller-result/types'
+import { serviceStatistics } from '#services/service-statistics'
 import { ApiError } from '#middlewares/api-error-middleware'
 
 class ServiceResult {
@@ -13,6 +14,7 @@ class ServiceResult {
             userId
         } = req.body
 
+        //@todo token
         try {
             const result = await Result?.create({
                 totalRightAnswers,
@@ -22,7 +24,14 @@ class ServiceResult {
                 userId
             })
 
-            res.send(result)
+            serviceStatistics.create(req, res, next);
+            const updatedStatistics = serviceStatistics.update(req, res, next);
+
+            updatedStatistics.then((statistic) => {
+                res.send({result, statistic})
+            })
+
+
         } catch (error) {
             if(error instanceof Error) {
                 next(ApiError.internal(error.message))
@@ -32,6 +41,7 @@ class ServiceResult {
 
     async getOne(req: IRequestResultGetOne, res: Response, next: (err: ApiError) => void) {
         const {userId, quizId} = req.query
+        //@todo token
 
         try {
             if(userId) {

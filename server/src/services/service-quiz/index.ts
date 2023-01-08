@@ -83,7 +83,7 @@ class ServiceQuiz {
                     return next(ApiError.badRequest('Нет пользователя с таким email'))
                 }
                 if(!isUserGuard(recipientCandidate)) {
-                    return next(ApiError.badRequest('Нет recipient с таким id'))
+                    return next(ApiError.badRequest(`Нет recipient с таким id - ${recipientId}`))
                 }
 
                 const quiz = await Quiz?.create({

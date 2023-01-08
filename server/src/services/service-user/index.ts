@@ -46,7 +46,7 @@ class ServiceUser {
         })
     }
 
-    async login(req: IRequestLogin, res: Response) {
+    async login(req: IRequestLogin, res: Response, next: (err: ApiError) => void) {
         if(!User) return
         const {email, password} = req.body
 
@@ -56,7 +56,7 @@ class ServiceUser {
         })
 
         if(!candidate) {
-            return res.status(404).send(`Нет пользователя с таким email ${email}, зарегестрируйтесь`)
+            return next(ApiError.badRequest(`Нет пользователя с таким email ${email}, зарегестрируйтесь`))
         }
 
         if(!isUserGuard(candidate)) {
@@ -93,11 +93,11 @@ class ServiceUser {
                 refreshToken
             })
         } else {
-            return res.status(404).send(`Неверный пароль`)
+            return next(ApiError.forbidden('Неверный пароль'))
         }
     }
 
-    async getOne(req: IRequestGetOneUser, res: Response) {
+    async getOne(req: IRequestGetOneUser, res: Response, next: (err: ApiError) => void) {
         if(!User) return
         const { id } = req.query
 
@@ -116,7 +116,7 @@ class ServiceUser {
             }
             res.send(candidateForClient)
         } else {
-            res.status(404).send('Пользователь не найдён')
+            return next(ApiError.badRequest('Пользователь не найдён'))
         }
     }
 

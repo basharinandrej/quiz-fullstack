@@ -1,9 +1,10 @@
-import {Request, Response} from 'express'
+import {Response} from 'express'
 import { Result } from '#models/index'
 import { IRequestResultCreate, IRequestResultGetOne } from '#controllers/controller-result/types'
+import { ApiError } from '#middlewaresapi-error-middleware'
 
 class ServiceResult {
-    async create(req: IRequestResultCreate, res: Response) {
+    async create(req: IRequestResultCreate, res: Response, next: (err: ApiError) => void) {
         const {
             totalRightAnswers,
             totalQuestions,
@@ -23,12 +24,13 @@ class ServiceResult {
 
             res.send(result)
         } catch (error) {
-            res.status(500).send(error)
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
         }
-
     }
 
-    async getOne(req: IRequestResultGetOne, res: Response) {
+    async getOne(req: IRequestResultGetOne, res: Response, next: (err: ApiError) => void) {
         const {userId, quizId} = req.query
 
         try {
@@ -49,7 +51,9 @@ class ServiceResult {
                 res.send(result)
             }
         } catch (error) {
-            res.status(500).send(error)
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
         }
     }
 }

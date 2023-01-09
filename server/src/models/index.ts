@@ -1,9 +1,9 @@
 import { DataTypes } from 'sequelize'
 import {instanceSequelize} from '../db/index'
-import { UserType, StatisticsModel, QuestionModel } from './types'
+import { UserType, StatisticsModel, QuestionModel, QuizModel } from './types'
 import {Role} from '../common/types/types'
 
-const Quiz = instanceSequelize?.define('quiz', {
+const Quiz = instanceSequelize?.define<QuizModel>('quiz', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -16,6 +16,14 @@ const Quiz = instanceSequelize?.define('quiz', {
     timer: {
         type: DataTypes.INTEGER,
         allowNull: true
+    },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    recipientId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 })
 

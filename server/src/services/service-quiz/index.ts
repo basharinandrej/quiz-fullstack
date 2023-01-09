@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { Quiz, User, Question, Answer, Hint } from '#models/index'
 import { QuestionModel } from '#models/types'
 import { IRequestQuizAll } from '#controllers/controller-quiz/types'

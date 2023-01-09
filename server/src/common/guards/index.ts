@@ -1,4 +1,4 @@
-import { UserTypeRequire, QuizTypesRequire, QuestionTypesRequire } from '#models/types'
+import { UserTypeRequire, QuestionModel, QuizModel } from '#models/types'
 import { IPayloadToken } from '#services/service-user/types'
 import { IAnswer } from '../../services/service-quiz/types';
 
@@ -25,7 +25,7 @@ export function isPayloadTokenGuard(payload: any): payload is IPayloadToken {
     return false
 }
 
-export function isQuizGuard(quiz: any): quiz is QuizTypesRequire {
+export function isQuizGuard(quiz: any): quiz is QuizModel {
     if(
         quiz.id && quiz.title && quiz.userId && quiz.recipientId
     ) {
@@ -34,7 +34,7 @@ export function isQuizGuard(quiz: any): quiz is QuizTypesRequire {
     return false
 }
 
-export function isQuestionGuard(question: any): question is QuestionTypesRequire {
+export function isQuestionGuard(question: any): question is QuestionModel {
     if(
         question.id && question.text && question.quizId
     ) {

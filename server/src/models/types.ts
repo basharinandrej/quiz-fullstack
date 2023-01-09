@@ -19,17 +19,13 @@ export type UserType = Model<UserTypeRequire, UserTypeOption>
 
 
 
-
-export interface QuizTypesRequire extends Record<string, unknown> {
-    id: number
+export interface QuizModel extends Model<InferAttributes<QuizModel>,  InferCreationAttributes<QuizModel>> {
+    id: CreationOptional<number>
     title: string
+    timer: CreationOptional<number>
     userId: number
-    recipientId: number
+    recipientId: CreationOptional<number>
 }
-
-type QuizTypeOption = Optional<QuizTypesRequire, 'id'>
-
-export type QuizType = Model<QuizTypesRequire, QuizTypeOption>
 
 
 

@@ -18,7 +18,7 @@ export interface UserModel extends Model<InferAttributes<UserModel>,  InferCreat
 export interface QuizModel extends Model<InferAttributes<QuizModel>,  InferCreationAttributes<QuizModel>> {
     id: CreationOptional<number>
     title: string
-    timer: CreationOptional<number>
+    timer?: number | null
     userId: number
     recipientId: CreationOptional<number>
 }

@@ -1,6 +1,6 @@
 import {Response} from 'express'
 import {Statistics, Quiz} from '#models/index'
-import { StatisticsModel, QuizType } from '#models/types'
+import { StatisticsModel, QuizModel } from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware';
 import { IRequestStatisticAll, IRequestStatisticCreate } from '#controllers/controller-statistics/types'
 
@@ -46,7 +46,7 @@ class ServiceStatistics {
             return next(ApiError.internal(`предыдущей статистики у пользователя с id ${userId} нет`))
         }
 
-        const quizzes = await Quiz?.findAndCountAll<QuizType>({
+        const quizzes = await Quiz?.findAndCountAll<QuizModel>({
             where: {
                 userId
             }

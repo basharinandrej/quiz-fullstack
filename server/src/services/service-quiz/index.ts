@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { Quiz, User, Question, Answer, Hint } from '#models/index'
-import { QuestionModel } from '#models/types'
+import { QuestionModel, QuizModel } from '#models/types'
 import { IRequestQuizAll } from '#controllers/controller-quiz/types'
 import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '#guards'
@@ -86,7 +86,7 @@ class ServiceQuiz {
                     return next(ApiError.badRequest(`Нет recipient с таким id - ${recipientId}`))
                 }
 
-                const quiz = await Quiz?.create({
+                const quiz = await Quiz?.create<QuizModel>({
                     title, 
                     timer, 
                     userId: user.id,

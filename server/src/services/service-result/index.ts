@@ -24,6 +24,7 @@ class ServiceResult {
                 userId
             })
 
+            //todo проверить если ли статистику у юзера, добавить флаг в токен что у юзера есть статистика
             serviceStatistics.create(req, res, next);
             const updatedStatistics = serviceStatistics.update(req, res, next);
 

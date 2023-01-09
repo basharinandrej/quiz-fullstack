@@ -1,6 +1,6 @@
 import {Response} from 'express'
 import {Statistics, Quiz} from '#models/index'
-import { StatisticsType, QuizType } from '#models/types'
+import { StatisticsModel, QuizType } from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware';
 import { IRequestStatisticAll, IRequestStatisticCreate } from '#controllers/controller-statistics/types'
 
@@ -11,7 +11,7 @@ class ServiceStatistics {
             userId
         } = req.body
 
-        const candadateStatistic = await Statistics?.findOne<StatisticsType>({
+        const candadateStatistic = await Statistics?.findOne<StatisticsModel>({
             where: {
                 userId
             }
@@ -19,9 +19,8 @@ class ServiceStatistics {
 
         if(candadateStatistic) {
             next(ApiError.internal(`статистика у пользователя с id ${userId} уже есть`))
-            return
         }
-        const statistics = await Statistics?.create({
+        const statistics = await Statistics?.create<StatisticsModel>({
             totalQuizzesSolved: 0,
             totalQuizzesMade: 0,
             totalRightAnswers: 0,
@@ -38,7 +37,7 @@ class ServiceStatistics {
             totalQuestions,
         } = req.body
 
-        const prevStatistics = await Statistics?.findOne<StatisticsType>({
+        const prevStatistics = await Statistics?.findOne<StatisticsModel>({
             where: {
                 userId
             }
@@ -69,7 +68,7 @@ class ServiceStatistics {
     async getAll(req: IRequestStatisticAll, res: Response, next: (err: ApiError) => void) {
         const {limit = 10, offset = 0} = req.query
         try {
-            const statistics = await Statistics?.findAndCountAll<StatisticsType>({
+            const statistics = await Statistics?.findAndCountAll<StatisticsModel>({
                 limit,
                 offset
             })

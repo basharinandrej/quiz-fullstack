@@ -1,5 +1,5 @@
 import {Role} from '../common/types/types'
-import { Model, Optional } from 'sequelize'
+import { Model, CreationOptional, Optional, InferAttributes, InferCreationAttributes } from 'sequelize'
 
 export interface UserTypeRequire {
     id: number;
@@ -43,15 +43,11 @@ export interface QuestionTypesRequire extends Record<string, unknown> {
 
 
 
-export interface StatisticsTypeRequire {
-    id: number,
-    userId: number,
-    totalRightAnswers: number,
-    totalQuestions: number,
-    totalQuizzesSolved: number,
-    totalQuizzesMade: number
+export interface StatisticsModel extends Model<InferAttributes<StatisticsModel>, InferCreationAttributes<StatisticsModel>> {
+    id: CreationOptional<number>;
+    userId: CreationOptional<number>;
+    totalRightAnswers: number;
+    totalQuestions: number;
+    totalQuizzesSolved: number;
+    totalQuizzesMade: number;
 }
-
-type StatisticsTypeOption = Optional<StatisticsTypeRequire, 'id'>
-
-export type StatisticsType = Model<StatisticsTypeRequire, StatisticsTypeOption>

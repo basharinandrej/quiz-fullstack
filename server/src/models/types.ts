@@ -1,8 +1,9 @@
 import {Role} from '../common/types/types'
 import { Model, CreationOptional, Optional, InferAttributes, InferCreationAttributes } from 'sequelize'
 
-export interface UserTypeRequire {
-    id: number;
+
+export interface UserModel extends Model<InferAttributes<UserModel>,  InferCreationAttributes<UserModel>> {
+    id: CreationOptional<number>;
     name: string;
     surname: string;
     email: string;
@@ -11,11 +12,6 @@ export interface UserTypeRequire {
     accessToken: string;
     refreshToken: string
 }
-
-type UserTypeOption = Optional<UserTypeRequire, 'id'>
-
-export type UserType = Model<UserTypeRequire, UserTypeOption>
-
 
 
 

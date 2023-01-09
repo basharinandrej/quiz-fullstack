@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize'
 import {instanceSequelize} from '../db/index'
-import { UserType, StatisticsModel, QuestionModel, QuizModel } from './types'
+import { UserModel, StatisticsModel, QuestionModel, QuizModel } from './types'
 import {Role} from '../common/types/types'
 
 const Quiz = instanceSequelize?.define<QuizModel>('quiz', {
@@ -92,7 +92,7 @@ const Result = instanceSequelize?.define('result', {
     }
 })
 
-const User = instanceSequelize?.define<UserType>('user', {
+const User = instanceSequelize?.define<UserModel>('user', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

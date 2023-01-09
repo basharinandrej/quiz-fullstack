@@ -1,8 +1,8 @@
-import { UserTypeRequire, QuestionModel, QuizModel } from '#models/types'
+import { UserModel, QuestionModel, QuizModel } from '#models/types'
 import { IPayloadToken } from '#services/service-user/types'
 import { IAnswer } from '../../services/service-quiz/types';
 
-export function isUserGuard(user: any): user is UserTypeRequire {
+export function isUserGuard(user: any): user is UserModel {
     if(
         user?.id && user?.name 
         && user?.surname && user?.email 

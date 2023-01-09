@@ -1,5 +1,5 @@
 import {User, Result} from '#models/index'
-import {UserType, UserTypeRequire} from '#models/types'
+import {UserModel} from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware'
 import bcrypt from 'bcrypt'
 import {Response} from 'express'
@@ -8,6 +8,7 @@ import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistr
 import { isUserGuard } from '#guards'
 import { Role } from '../../common/types/types'
 import { createToken } from './utils'
+import { DataTypes } from 'sequelize';
 
 class ServiceUser {
     async registration(req: IRequestRegistration, res: Response, next: (err: ApiError) => void) {
@@ -18,7 +19,7 @@ class ServiceUser {
             name, surname, email, role
         }
 
-        const candidate = await User.findOne({
+        const candidate = await User.findOne<UserModel>({
             where: {email}
         })
 
@@ -30,7 +31,7 @@ class ServiceUser {
         const accessToken = createToken(payloadToken, '30m')
         const refreshToken = createToken(payloadToken, '30d')
 
-        const user = await User.create({
+        const user = await User.create<UserModel>({
             name,
             surname,
             email,
@@ -52,25 +53,13 @@ class ServiceUser {
         const {email, password} = req.body
 
 
-        const candidate = await User.findOne({
+        const candidate = await User.findOne<UserModel>({
             where: {email}
         })
 
         if(!candidate) {
             return next(ApiError.badRequest(`Нет пользователя с таким email ${email}, зарегестрируйтесь`))
         }
-
-        if(!isUserGuard(candidate)) {
-            const emptyFields: string[] = []
-            
-
-            for(let key in candidate.dataValues) {
-                if( candidate.dataValues[key as keyof UserTypeRequire] === null) {
-                    emptyFields.push(key)
-                }
-            }
-            return res.status(404).send(`пользователь с таким login не корректен. Поле(я) ${emptyFields.join(',')} пусты`)
-        } 
         
         const isPasswordMatch = await bcrypt.compare(password, candidate.password)
 
@@ -102,7 +91,7 @@ class ServiceUser {
         if(!User) return
         const { id } = req.query
 
-        const candidate = await User.findOne({
+        const candidate = await User.findOne<UserModel>({
             where: { id },
             include: [{ model: Result }]
         })
@@ -124,7 +113,7 @@ class ServiceUser {
     async getAll(req: IRequestGetAllUsers, res: Response) {
         const { limit = 10, offset = 0 } = req.query
 
-        const users = await User?.findAndCountAll<UserType>({
+        const users = await User?.findAndCountAll<UserModel>({
             limit,
             offset
         })

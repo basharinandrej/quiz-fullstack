@@ -1,5 +1,5 @@
 import {Role} from '../../common/types/types'
-import {UserTypeRequire} from '#models/types'
+import {UserModel} from '#models/types'
 
 export interface IPayloadToken {
     name: string
@@ -8,5 +8,4 @@ export interface IPayloadToken {
     role: Role
 }
 
-export interface IUserForClient extends Omit<UserTypeRequire, 
-    'password' | 'accessToken' | 'refreshToken'> {}
+export interface IUserForClient extends Omit<UserModel['dataValues'], 'password' | 'accessToken' | 'refreshToken'> {}

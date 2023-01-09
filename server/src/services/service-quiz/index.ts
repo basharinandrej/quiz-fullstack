@@ -106,7 +106,7 @@ class ServiceQuiz {
                     if(Array.isArray(questions) && questions.length >= 1) {
                         questions.forEach( async (questionsItem) => {
                             const question = await Question?.create<QuestionModel>({
-                                text: questionsItem.textQuestion,
+                                text: questionsItem.text,
                                 quizId: quiz.id
                             })
 
@@ -134,7 +134,7 @@ class ServiceQuiz {
                                 if( q.dataValues.id ) {
                                     try {
                                         await Hint?.create({
-                                            text: questions[idx].textHint,
+                                            text: questions[idx].text,
                                             questionId: q.dataValues.id
                                         })
                                     } catch (error) {

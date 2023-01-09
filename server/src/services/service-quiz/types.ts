@@ -1,5 +1,5 @@
 import { Request } from "express";
-import {AnswerModel} from '#models/types'
+import {AnswerModel, QuestionModel} from '#models/types'
 
 export interface IReqCreateQuiz extends IReqQuestions {
     title: string
@@ -9,9 +9,7 @@ export interface IReqCreateQuiz extends IReqQuestions {
 interface IReqQuestions {
     questions: Array<IReqQuestion>
 }
-interface IReqQuestion extends IAnswers, IHint {
-    textQuestion: string
-}
+interface IReqQuestion extends IAnswers, IHint, QuestionModel {}
 
 export interface IAnswers {
     answers: Array<AnswerModel>

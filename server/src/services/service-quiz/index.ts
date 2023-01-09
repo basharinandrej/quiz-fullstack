@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Quiz, User, Question, Answer, Hint } from '#models/index'
-import { QuestionTypesRequire } from '#models/types'
+import { QuestionModel } from '#models/types'
 import { IRequestQuizAll } from '#controllers/controller-quiz/types'
 import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '#guards'
@@ -98,14 +98,14 @@ class ServiceQuiz {
 
                 }
 
-                const createdQuestions: QuestionTypesRequire[] = []
+                const createdQuestions: QuestionModel[] = []
                 
 
                 const promiseQuestions = new Promise((resolve, reject) => {
 
                     if(Array.isArray(questions) && questions.length >= 1) {
                         questions.forEach( async (questionsItem) => {
-                            const question = await Question?.create({
+                            const question = await Question?.create<QuestionModel>({
                                 text: questionsItem.textQuestion,
                                 quizId: quiz.id
                             })
@@ -113,7 +113,7 @@ class ServiceQuiz {
                             if(!isQuestionGuard(question)) {
                                 reject('qestion не создался')
                             } else {
-                                createdQuestions.push(question)
+                                question && createdQuestions.push(question)
                                 if(createdQuestions.length === questions.length) {
                                     resolve(createdQuestions)
                                 }

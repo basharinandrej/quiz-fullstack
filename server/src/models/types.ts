@@ -33,12 +33,10 @@ export type QuizType = Model<QuizTypesRequire, QuizTypeOption>
 
 
 
-
-
-export interface QuestionTypesRequire extends Record<string, unknown> {
-    id: number
+export interface QuestionModel extends Model<InferAttributes<QuestionModel>, InferCreationAttributes<QuestionModel>> {
+    id: CreationOptional<number>
+    quizId: CreationOptional<number>
     text: string
-    quizId: number
 }
 
 

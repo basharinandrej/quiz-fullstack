@@ -166,7 +166,6 @@ class ServiceQuiz {
 
                         const result = createdQuestions.map((q) => {
                             const newResult = {
-                                //@ts-ignore
                                 ...q.dataValues,
                                 answers: response.slice(positionCursor, positionCursor + 4)
                             }

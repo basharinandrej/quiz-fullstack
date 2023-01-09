@@ -1,5 +1,5 @@
 import {Role} from '../common/types/types'
-import { Model, CreationOptional, Optional, InferAttributes, InferCreationAttributes } from 'sequelize'
+import { Model, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize'
 
 
 export interface UserModel extends Model<InferAttributes<UserModel>,  InferCreationAttributes<UserModel>> {

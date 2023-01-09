@@ -1,6 +1,6 @@
 import { UserModel, QuestionModel, QuizModel } from '#models/types'
 import { IPayloadToken } from '#services/service-user/types'
-import { IAnswer } from '../../services/service-quiz/types';
+import {AnswerModel} from '#models/types'
 
 export function isUserGuard(user: any): user is UserModel {
     if(
@@ -43,9 +43,9 @@ export function isQuestionGuard(question: any): question is QuestionModel {
     return false
 }
 
-export function isAnswerGuard(answer: any): answer is IAnswer {
+export function isAnswerGuard(answer: AnswerModel): answer is AnswerModel {
     if(
-        typeof answer.isRightAnswer === 'boolean' && answer.textAnswer
+        typeof answer.isRightAnswer === 'boolean' && answer.text
     ) {
         return true
     }

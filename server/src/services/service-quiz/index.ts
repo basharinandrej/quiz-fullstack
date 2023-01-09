@@ -1,15 +1,15 @@
-import { Response } from "express";
+import { Response, NextFunction } from "express";
 import { Quiz, User, Question, Answer, Hint } from '#models/index'
-import { QuestionModel, QuizModel } from '#models/types'
+import { QuestionModel, QuizModel, AnswerModel } from '#models/types'
 import { IRequestQuizAll } from '#controllers/controller-quiz/types'
 import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '#guards'
-import { IRequestQuizCreate, IAnswer } from './types'
+import { IRequestQuizCreate } from './types'
 import jwt from 'jsonwebtoken';
 import { ApiError } from "#middlewares/api-error-middleware";
 
 class ServiceQuiz {
-    async getQuizzesAll(req: IRequestQuizAll, res: Response, next: (err: ApiError) => void) {
+    async getQuizzesAll(req: IRequestQuizAll, res: Response, next: NextFunction) {
         const { recipientId, authorId } = req.query
         const token = req.headers.authorization?.split(' ')[1]
         if(!token) {
@@ -55,7 +55,7 @@ class ServiceQuiz {
         })
     }
 
-    async createQuiz(req: IRequestQuizCreate, res: Response, next: (err: ApiError) => void) {
+    async createQuiz(req: IRequestQuizCreate, res: Response, next: NextFunction) {
         const {title, timer = null, recipientId, questions} = req.body
 
         const token = req.headers.authorization?.split(' ')[1]
@@ -128,7 +128,7 @@ class ServiceQuiz {
                 const answersPromise = new Promise((resolve, reject) => {
                     promiseQuestions.then((response) => {
 
-                        const createdAnswers: IAnswer[] = []
+                        const createdAnswers: AnswerModel[] = []
                         if(Array.isArray(response) && isQuestionGuard(response[0])) {
                             response.forEach( async (q, idx) => {
                                 if( q.dataValues.id ) {
@@ -142,7 +142,7 @@ class ServiceQuiz {
                                     }
                                 }
 
-                                createAnswers(res, questions[idx].answers, q.id)
+                                createAnswers(res, questions[idx].answers, q.id, next)
                                     .then((r) => {
                                         if(Array.isArray(r) && isAnswerGuard(r[0])) {
                                             createdAnswers.push(...r)

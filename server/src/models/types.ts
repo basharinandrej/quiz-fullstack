@@ -41,3 +41,10 @@ export interface StatisticsModel extends Model<InferAttributes<StatisticsModel>,
     totalQuizzesSolved: number;
     totalQuizzesMade: number;
 }
+
+export interface AnswerModel extends Model<InferAttributes<AnswerModel>, InferCreationAttributes<AnswerModel>> {
+    id: CreationOptional<number>;
+    text: string;
+    isRightAnswer: boolean
+    questionId: CreationOptional<number>
+}

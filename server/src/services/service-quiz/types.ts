@@ -1,4 +1,5 @@
 import { Request } from "express";
+import {AnswerModel} from '#models/types'
 
 export interface IReqCreateQuiz extends IReqQuestions {
     title: string
@@ -13,11 +14,7 @@ interface IReqQuestion extends IAnswers, IHint {
 }
 
 export interface IAnswers {
-    answers: Array<IAnswer>
-}
-export interface IAnswer {
-    textAnswer: string
-    isRightAnswer: boolean
+    answers: Array<AnswerModel>
 }
 
 

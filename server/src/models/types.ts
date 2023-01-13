@@ -58,3 +58,13 @@ export interface HintModel extends Model<InferAttributes<HintModel>, InferCreati
     text: string;
     questionId: CreationOptional<number>
 }
+
+
+export interface ResultModel extends Model<InferAttributes<ResultModel>, InferCreationAttributes<ResultModel>> {
+    id: CreationOptional<number>;
+    totalRightAnswers: number
+    totalQuestions: number
+    rating: CreationOptional<number>
+    quizId: number
+    userId: number
+}

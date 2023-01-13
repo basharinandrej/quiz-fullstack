@@ -1,11 +1,12 @@
-import {Response} from 'express'
+import {Response, NextFunction} from 'express'
 import { Result } from '#models/index'
 import { IRequestResultCreate, IRequestResultGetOne } from '#controllers/controller-result/types'
 import { serviceStatistics } from '#services/service-statistics'
 import { ApiError } from '#middlewares/api-error-middleware'
+import { ResultModel } from '#models/types'
 
 class ServiceResult {
-    async create(req: IRequestResultCreate, res: Response, next: (err: ApiError) => void) {
+    async create(req: IRequestResultCreate, res: Response, next: NextFunction) {
         const {
             totalRightAnswers,
             totalQuestions,
@@ -16,7 +17,7 @@ class ServiceResult {
 
         //@todo token
         try {
-            const result = await Result?.create({
+            const result = await Result?.create<ResultModel>({
                 totalRightAnswers,
                 totalQuestions,
                 rating,
@@ -40,7 +41,7 @@ class ServiceResult {
         }
     }
 
-    async getOne(req: IRequestResultGetOne, res: Response, next: (err: ApiError) => void) {
+    async getOne(req: IRequestResultGetOne, res: Response, next: NextFunction) {
         const {userId, quizId} = req.query
         //@todo token
 
@@ -51,7 +52,7 @@ class ServiceResult {
                 })
                 res.send(result)
             } else if(quizId) {
-                const result = await Result?.findOne({
+                const result = await Result?.findOne<ResultModel>({
                     where: {quizId}
                 })
                 res.send(result)

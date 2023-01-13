@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize'
 import {instanceSequelize} from '../db/index'
-import { UserModel, StatisticsModel, QuestionModel, QuizModel, AnswerModel, HintModel } from './types'
+import { UserModel, ResultModel, StatisticsModel, QuestionModel, QuizModel, AnswerModel, HintModel } from './types'
 import {Role} from '../common/types/types'
 
 const Quiz = instanceSequelize?.define<QuizModel>('quiz', {
@@ -80,7 +80,7 @@ const Hint = instanceSequelize?.define<HintModel>('hint', {
     }
 })
 
-const Result = instanceSequelize?.define('result', {
+const Result = instanceSequelize?.define<ResultModel>('result', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -97,6 +97,14 @@ const Result = instanceSequelize?.define('result', {
     rating: {
         type: DataTypes.FLOAT,
         allowNull: false
+    },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    quizId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
     }
 })
 

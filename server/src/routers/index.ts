@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import {routerUser} from '../routers/router-user'
+import {routerUser} from './router-user/router-user'
 import {routerQuiz} from '../routers/router-quiz'
 import {routerResult} from '../routers/router-result'
 import {routerStatistics} from '../routers/router-statistic'

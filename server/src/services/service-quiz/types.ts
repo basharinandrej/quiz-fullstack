@@ -21,4 +21,4 @@ interface IHint {
     questionId: number
 }
 
-export interface IRequestQuizCreate extends Request<unknown, unknown, IReqCreateQuiz> {}
+export interface IRequestQuizCreate extends Request<Record<string, any> | undefined, Record<string, any> | undefined, IReqCreateQuiz> {}

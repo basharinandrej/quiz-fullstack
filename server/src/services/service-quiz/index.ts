@@ -6,6 +6,7 @@ import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '#guards'
 import { IRequestQuizCreate } from './types'
 import jwt from 'jsonwebtoken';
+import { validationResult } from "express-validator";
 import { ApiError } from "#middlewares/api-error-middleware";
 
 class ServiceQuiz {
@@ -59,11 +60,12 @@ class ServiceQuiz {
         const {title, timer = null, recipientId, questions} = req.body
 
         const token = req.headers.authorization?.split(' ')[1]
-            if(!token) {
-                return next(ApiError.badRequest('Heт токена доступа'))
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return next(ApiError.badRequest(errors.array()))
             }
 
-            jwt.verify(token, process.env.SECRET_KEY || '', async (err, decode: any) => {
+            token && jwt.verify(token, process.env.SECRET_KEY || '', async (err, decode: any) => {
                 if(err) {
                     if(err instanceof Error) {
                         return next(ApiError.internal(err.message))

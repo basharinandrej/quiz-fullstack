@@ -1,12 +1,14 @@
 import {Role} from '../common/types/types'
-import {Request, Response, NextFunction} from 'express'
+import { Response, NextFunction} from 'express'
 import jwt from 'jsonwebtoken';
 import { isPayloadTokenGuard} from '#guards'
 import { ApiError } from '#middlewares/api-error-middleware';
-
+import { 
+    IRequestDeleteUser
+} from '#controllers/controller-user/types'
 
 export function isAdminMiddleware(role: Role) {
-    return function(req: any, res: any, next: NextFunction) {
+    return function(req: IRequestDeleteUser, res: Response, next: NextFunction) {
         const token = req.headers.authorization?.split(' ')[1]
 
         if(!token) {

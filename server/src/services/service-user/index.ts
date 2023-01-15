@@ -73,9 +73,7 @@ class ServiceUser {
             where: {email}
         })
 
-        if(!candidate) {
-            return next(ApiError.badRequest(`Нет пользователя с таким email ${email}, зарегестрируйтесь`))
-        }
+        if(!candidate) return
         
         const isPasswordMatch = await bcrypt.compare(password, candidate.password)
 

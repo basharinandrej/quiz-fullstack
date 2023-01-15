@@ -14,7 +14,16 @@ export const validation = {
 
     loginChains() {
         return [
-            body('email').isEmail().withMessage('uncorrect value').trim()
+            body('email').isEmail().withMessage('uncorrect value').trim(),
+            body('email').custom(email => {
+                return User?.findOne({
+                    where: {email}
+                }).then((user) => {
+                    if(!user) {
+                        return Promise.reject(`User'a с id - ${email} нет`)
+                    }
+                })
+            })
         ]
     },
 
@@ -25,7 +34,7 @@ export const validation = {
     },
 
     deleteChains() {
-        return     [
+        return [
             query('id').custom(id => {
                 return User?.findOne({
                     where: {id}

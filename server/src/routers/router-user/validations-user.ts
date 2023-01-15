@@ -8,7 +8,16 @@ export const validation = {
             body('password').isLength({ min: 6 }).withMessage('must be at least 6 chars long').trim(),
             body('email').isEmail().withMessage('uncorrect value').trim(),
             body('name').isLength({min: 2}).withMessage({length: 'length > 1'}).trim(),
-            body('surname').isLength({min: 2}).withMessage({length: 'length > 1'}).trim()
+            body('surname').isLength({min: 2}).withMessage({length: 'length > 1'}).trim(),
+            body('email').custom(email => {
+                return User?.findOne({
+                    where: {email}
+                }).then((user) => {
+                    if(user) {
+                        return Promise.reject(`Пользователь с email - ${email} уже есть`)
+                    }
+                })
+            })
         ]
     },
 
@@ -20,7 +29,7 @@ export const validation = {
                     where: {email}
                 }).then((user) => {
                     if(!user) {
-                        return Promise.reject(`User'a с id - ${email} нет`)
+                        return Promise.reject(`User'a с email - ${email} нет`)
                     }
                 })
             })

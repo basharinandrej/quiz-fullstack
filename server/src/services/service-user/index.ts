@@ -35,9 +35,7 @@ class ServiceUser {
             where: {email}
         })
 
-        if(candidate) {
-            return next(ApiError.badRequest(`Пользователь с таким email ${email} уже есть`))
-        }
+        if(candidate) return
 
         const hashPassword = await bcrypt.hash(password, 9)
         const accessToken = createToken(payloadToken, '30m')

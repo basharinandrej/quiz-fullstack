@@ -10,7 +10,7 @@ export function errorMiddleware(err: ApiError, req: Request, res: Response, next
     if(err instanceof ApiError) {
         if(Array.isArray(err.errors)) {
             res.status(err.status).json(err.errors)
-        } else if(typeof err.errors === 'string') {
+        } else if(typeof err.message === 'string') {
             res.status(err.status).json({message: err.message})
         }
     }

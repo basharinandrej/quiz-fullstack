@@ -44,7 +44,10 @@ export const validation = {
 
     deleteChains() {
         return [
+            query('id').notEmpty().withMessage('отсутствует id'),
             query('id').custom(id => {
+                if(!id) return
+
                 return User?.findOne({
                     where: {id}
                 }).then((user) => {
@@ -59,6 +62,16 @@ export const validation = {
     updateChains() {
         return [
             body('id').notEmpty().withMessage('uncorrect value').trim(),
+            body('id').custom(id => {
+                console.log(id)
+                return User?.findOne({
+                    where: {id}
+                }).then((user) => {
+                    if(!user) {
+                        return Promise.reject(`User'a с id - ${id} нет`)
+                    }
+                })
+            }),
             body('name').custom(name => {
                 if(name) {
                     if(name.length <= 1) {

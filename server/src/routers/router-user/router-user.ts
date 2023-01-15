@@ -1,6 +1,8 @@
 import {Router} from 'express'
 import {validation} from './validations-user'
 import {controllerUser} from '#controllers/controller-user'
+import { isAdminMiddleware } from '#middlewares/is-admin-middleware'
+import { Role } from 'common/types/types'
 
 
 const router = Router()
@@ -22,13 +24,14 @@ router.get('/getOne',
 
 router.get('/getAll', controllerUser.getAll)
 
-router.delete('/', 
-    validation.deleteChains(), 
+router.delete('/',
+    validation.deleteChains(),
+    isAdminMiddleware(Role.ADMIN),
     controllerUser.delete
 )
 
 router.put('/', 
-    validation.updateChains, 
+    validation.updateChains(),
     controllerUser.update
 )
 

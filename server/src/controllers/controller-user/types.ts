@@ -44,4 +44,5 @@ interface IQueryDeleteUser extends Record<string, unknown>{
 export interface IRequestDeleteUser extends Pick<Request<unknown, unknown, unknown, IQueryDeleteUser>, 'query' | 'headers'> {}
 
 
-export interface IRequestUpdateUser extends Request<core.ParamsDictionary, any, any, ParsedQs, Record<string, any>> {}
+export interface IRequestUpdateUser extends Request<
+    core.ParamsDictionary, any, any, ParsedQs, Record<string, any>> {}

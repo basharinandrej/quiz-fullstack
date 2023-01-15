@@ -16,9 +16,9 @@ export function isUserGuard(user: any): user is UserModel {
 
 export function isPayloadTokenGuard(payload: any): payload is IPayloadToken {
     if(
-        payload.name 
-        && payload.surname && payload.email 
-        && payload.role 
+        payload?.name 
+        && payload?.surname && payload?.email 
+        && payload?.role 
     ) {
         return true
     }

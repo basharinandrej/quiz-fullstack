@@ -100,6 +100,11 @@ class ServiceUser {
         if(!User) return
         const { id } = req.query
 
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return next(ApiError.badRequest(errors.array()))
+        }
+        
         const candidate = await User.findOne<UserModel>({
             where: { id },
             include: [{ model: Result }]

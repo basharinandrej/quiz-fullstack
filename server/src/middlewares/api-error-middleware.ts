@@ -13,11 +13,13 @@ export function errorMiddleware(err: ApiError, req: Request, res: Response, next
 }
 
 
-export class ApiError {
+export class ApiError extends Error {
     status: number = 0
+    /*@todo fix*/
     message: string | ValidationError[] = ''
 
     constructor(status: number, message: string | ValidationError[]) {
+        super()
         this.status = status,
         this.message = message
     }

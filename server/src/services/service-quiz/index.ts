@@ -13,13 +13,13 @@ class ServiceQuiz {
     async getQuizzesAll(req: IRequestQuizAll, res: Response, next: NextFunction) {
         const { recipientId, authorId } = req.query
         const token = req.headers.authorization?.split(' ')[1]
-        if(!token) {
-            return next(ApiError.badRequest('Heт токена доступа'))
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return next(ApiError.badRequest(errors.array()))
         }
-        if(!recipientId && !authorId) {
-            return next(ApiError.badRequest('Одно из полей обязательно: recipient, author'))
-        }
-        jwt.verify(token, process.env.SECRET_KEY || '', async (err, decode: any) => {
+
+        token && jwt.verify(token, process.env.SECRET_KEY || '', async (err, decode: any) => {
             if(err instanceof Error) {
                 return next(ApiError.internal(err?.message))
             }
@@ -97,7 +97,6 @@ class ServiceQuiz {
 
                 if(!isQuizGuard(quiz)) {
                     return next(ApiError.internal('quiz не создался'))
-
                 }
 
                 const createdQuestions: QuestionModel[] = []

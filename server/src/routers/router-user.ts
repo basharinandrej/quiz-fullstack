@@ -47,4 +47,24 @@ router.delete('/',
     controllerUser.delete
 )
 
+router.put('/', [
+    body('id').notEmpty().withMessage('uncorrect value').trim(),
+    body('name').custom(name => {
+        if(name) {
+            if(name.length <= 1) {
+                return Promise.reject('name должен быть больше 1')
+            }
+        }
+        return true
+    }),
+    body('surname').custom(surname => {
+        if(surname) {
+            if(surname.length <= 1) {
+                return Promise.reject('surname должен быть больше 1')
+            }
+        }
+        return true
+    }),
+], controllerUser.update)
+
 export const routerUser = router

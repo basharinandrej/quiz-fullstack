@@ -9,7 +9,8 @@ import {
     IRequestGetOneUser,
     IRequestLogin,
     IRequestRegistration,
-    IRequestDeleteUser
+    IRequestDeleteUser,
+    IRequestUpdateUser
 } from '#controllers/controller-user/types'
 import { isUserGuard } from '#guards'
 import { Role } from '../../common/types/types'
@@ -171,6 +172,40 @@ class ServiceUser {
         result 
             ? res.status(200).json(result)
             : res.status(500).json(result)
+    }
+
+    async update(req: IRequestUpdateUser, res: Response, next: NextFunction) {
+        const {id, name, surname } = req.body
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return next(ApiError.badRequest(errors.array()))
+        }
+
+        const result = await User?.update(
+            { name, surname }, 
+            {
+                where: {
+                    id
+                }
+            }
+        );
+
+        if(result) {
+            const updatedUser = await User?.findOne(
+                {where: {id}}
+            )
+            res.status(200).json({
+                id: updatedUser?.id,
+                name: updatedUser?.name,
+                surname: updatedUser?.surname,
+                email: updatedUser?.email,
+                role: updatedUser?.role
+            })
+        } else {
+            res.status(500).json(result)
+        }
+
     }
 }
 

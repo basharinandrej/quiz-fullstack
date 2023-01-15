@@ -6,7 +6,8 @@ import {
     IRequestGetOneUser,
     IRequestLogin,
     IRequestRegistration,
-    IRequestDeleteUser 
+    IRequestDeleteUser,
+    IRequestUpdateUser
 } from './types'
 import { ApiError } from '#middlewares/api-error-middleware';
 
@@ -56,6 +57,16 @@ class ControllerUser {
     async delete(req: IRequestDeleteUser, res: Response, next: NextFunction) {
         try {
             serviceUser.delete(req, res, next )
+        } catch (error) {
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
+        }
+    }
+
+    async update(req: IRequestUpdateUser, res: Response, next: NextFunction) {
+        try {
+            serviceUser.update(req, res, next)
         } catch (error) {
             if(error instanceof Error) {
                 next(ApiError.internal(error.message))

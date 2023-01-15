@@ -37,7 +37,7 @@ class ControllerUser {
         }
     }
 
-    async getAll(req: IRequestGetAllUsers, res: Response, next: (err: ApiError) => void) {
+    async getAll(req: IRequestGetAllUsers, res: Response, next: NextFunction) {
         try {
             serviceUser.getAll(req, res)
         } catch (error) {

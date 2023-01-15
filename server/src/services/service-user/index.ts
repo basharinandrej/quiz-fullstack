@@ -2,7 +2,7 @@ import {User, Result} from '#models/index'
 import {UserModel} from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware'
 import bcrypt from 'bcrypt'
-import {Response} from 'express'
+import {Response, NextFunction} from 'express'
 import { IPayloadToken, IUserForClient } from './types'
 import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistration } from '#controllers/controller-user/types'
 import { isUserGuard } from '#guards'
@@ -11,7 +11,7 @@ import { createToken } from './utils'
 import { validationResult } from "express-validator";
 
 class ServiceUser {
-    async registration(req: IRequestRegistration, res: Response, next: (err: ApiError) => void) {
+    async registration(req: IRequestRegistration, res: Response, next: NextFunction) {
         const {name, surname, email, role = Role.USER, password} = req.body
 
         const errors = validationResult(req)
@@ -53,7 +53,7 @@ class ServiceUser {
         })
     }
 
-    async login(req: IRequestLogin, res: Response, next: (err: ApiError) => void) {
+    async login(req: IRequestLogin, res: Response, next: NextFunction) {
         if(!User) return
         const {email, password} = req.body
 
@@ -96,7 +96,7 @@ class ServiceUser {
         }
     }
 
-    async getOne(req: IRequestGetOneUser, res: Response, next: (err: ApiError) => void) {
+    async getOne(req: IRequestGetOneUser, res: Response, next: NextFunction) {
         if(!User) return
         const { id } = req.query
 
@@ -104,7 +104,7 @@ class ServiceUser {
         if (!errors.isEmpty()) {
             return next(ApiError.badRequest(errors.array()))
         }
-        
+
         const candidate = await User.findOne<UserModel>({
             where: { id },
             include: [{ model: Result }]

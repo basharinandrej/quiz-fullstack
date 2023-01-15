@@ -1,4 +1,4 @@
-import {Response} from 'express'
+import {Response, NextFunction} from 'express'
 import dotenv from 'dotenv';
 import { serviceUser } from '#services/service-user'
 import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistration } from './types'
@@ -7,7 +7,7 @@ import { ApiError } from '#middlewares/api-error-middleware';
 dotenv.config();
 
 class ControllerUser {
-    async registration(req: IRequestRegistration, res: Response, next: (err: ApiError) => void) {
+    async registration(req: IRequestRegistration, res: Response, next: NextFunction) {
         try {
             serviceUser.registration(req, res, next)
         } catch (error) {
@@ -17,7 +17,7 @@ class ControllerUser {
         }
     }
 
-    async login(req: IRequestLogin, res: Response, next: (err: ApiError) => void) {
+    async login(req: IRequestLogin, res: Response, next: NextFunction) {
         try {
             serviceUser.login(req, res, next)
         } catch (error) {
@@ -27,7 +27,7 @@ class ControllerUser {
         }
     }
 
-    async getOne(req: IRequestGetOneUser, res: Response, next: (err: ApiError) => void) {
+    async getOne(req: IRequestGetOneUser, res: Response, next: NextFunction) {
         try {
             serviceUser.getOne(req, res, next)
         } catch (error) {

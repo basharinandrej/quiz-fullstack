@@ -9,7 +9,7 @@ interface IBodyRegistration {
     password: string
 }
 
-export interface IRequestRegistration extends Request<unknown, unknown, IBodyRegistration> {}
+export interface IRequestRegistration extends Request<Record<string, any> | undefined, Record<string, any> | undefined, IBodyRegistration> {}
 
 
 interface IBodyLogin {

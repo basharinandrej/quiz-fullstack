@@ -8,11 +8,16 @@ import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistr
 import { isUserGuard } from '#guards'
 import { Role } from '../../common/types/types'
 import { createToken } from './utils'
-import { DataTypes } from 'sequelize';
+import { validationResult } from "express-validator";
 
 class ServiceUser {
     async registration(req: IRequestRegistration, res: Response, next: (err: ApiError) => void) {
         const {name, surname, email, role = Role.USER, password} = req.body
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return next(ApiError.badRequest(errors.array()))
+        }
 
         if(!User) return
         const payloadToken: IPayloadToken = {

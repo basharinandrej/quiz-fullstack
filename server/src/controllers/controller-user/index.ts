@@ -1,7 +1,13 @@
 import {Response, NextFunction} from 'express'
 import dotenv from 'dotenv';
 import { serviceUser } from '#services/service-user'
-import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistration } from './types'
+import {
+    IRequestGetAllUsers,
+    IRequestGetOneUser,
+    IRequestLogin,
+    IRequestRegistration,
+    IRequestDeleteUser 
+} from './types'
 import { ApiError } from '#middlewares/api-error-middleware';
 
 dotenv.config();
@@ -40,6 +46,16 @@ class ControllerUser {
     async getAll(req: IRequestGetAllUsers, res: Response, next: NextFunction) {
         try {
             serviceUser.getAll(req, res)
+        } catch (error) {
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
+        }
+    }
+
+    async delete(req: IRequestDeleteUser, res: Response, next: NextFunction) {
+        try {
+            serviceUser.delete(req, res, next )
         } catch (error) {
             if(error instanceof Error) {
                 next(ApiError.internal(error.message))

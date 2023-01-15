@@ -18,7 +18,6 @@ class ServiceResult {
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            console.log('>>>> errors', errors)
             return next(ApiError.badRequest(errors.array()))
         }
 

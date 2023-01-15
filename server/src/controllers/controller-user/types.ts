@@ -32,3 +32,11 @@ interface IQueryGetOneUser extends Record<string, unknown>{
 }
 
 export interface IRequestGetOneUser extends Pick<Request<unknown, unknown, unknown, IQueryGetOneUser>, 'query'> {}
+
+
+
+interface IQueryDeleteUser extends Record<string, unknown>{
+    id: number,
+}
+
+export interface IRequestDeleteUser extends Pick<Request<unknown, unknown, unknown, IQueryDeleteUser>, 'query'> {}

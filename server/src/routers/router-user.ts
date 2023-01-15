@@ -1,6 +1,7 @@
 import {Router} from 'express'
 import { body, query } from 'express-validator';
 import {controllerUser} from '#controllers/controller-user'
+import { User } from '#models/index'
 
 
 const router = Router()
@@ -31,5 +32,19 @@ router.get('/getOne',
 
 router.get('/getAll', controllerUser.getAll)
 
+router.delete('/', 
+    [
+        query('id').custom(id => {
+            return User?.findOne({
+                where: {id}
+            }).then((user) => {
+                if(!user) {
+                    return Promise.reject(`User'a с id - ${id} нет`)
+                }
+            })
+        })
+    ], 
+    controllerUser.delete
+)
 
 export const routerUser = router

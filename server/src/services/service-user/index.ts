@@ -4,7 +4,13 @@ import { ApiError } from '#middlewares/api-error-middleware'
 import bcrypt from 'bcrypt'
 import {Response, NextFunction} from 'express'
 import { IPayloadToken, IUserForClient } from './types'
-import { IRequestGetAllUsers, IRequestGetOneUser, IRequestLogin, IRequestRegistration } from '#controllers/controller-user/types'
+import { 
+    IRequestGetAllUsers,
+    IRequestGetOneUser,
+    IRequestLogin,
+    IRequestRegistration,
+    IRequestDeleteUser
+} from '#controllers/controller-user/types'
 import { isUserGuard } from '#guards'
 import { Role } from '../../common/types/types'
 import { createToken } from './utils'
@@ -146,6 +152,25 @@ class ServiceUser {
             rows: rowsForClient
         }
         res.send(userForClient)
+    }
+
+    async delete(req: IRequestDeleteUser, res: Response, next: NextFunction) {
+        const { id } = req.query
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return next(ApiError.badRequest(errors.array()))
+        }
+
+        const result = await User?.destroy({
+            where: {
+                id
+            }
+        })
+
+        result 
+            ? res.status(200).json(result)
+            : res.status(500).json(result)
     }
 }
 

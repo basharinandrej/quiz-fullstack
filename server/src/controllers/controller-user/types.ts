@@ -17,7 +17,7 @@ interface IBodyLogin {
     password: string
 }
 
-export interface IRequestLogin extends Request<unknown, unknown, IBodyLogin> {}
+export interface IRequestLogin extends Request<Record<string, any> | undefined, Record<string, any> | undefined, IBodyLogin> {}
 
 interface IQueryGetAllUsers extends Record<string, unknown>{
     limit: number,

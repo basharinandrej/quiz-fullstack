@@ -57,6 +57,10 @@ class ServiceUser {
         if(!User) return
         const {email, password} = req.body
 
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return next(ApiError.badRequest(errors.array()))
+        }
 
         const candidate = await User.findOne<UserModel>({
             where: {email}

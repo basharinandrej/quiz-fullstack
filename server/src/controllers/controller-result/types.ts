@@ -8,7 +8,7 @@ interface IBodyResult {
     userId: number
 }
 
-export interface IRequestResultCreate extends Request<unknown, unknown, IBodyResult> {}
+export interface IRequestResultCreate extends Request<Record<string, any> | undefined, Record<string, any> | undefined, IBodyResult> {}
 
 
 interface IQueryResult {

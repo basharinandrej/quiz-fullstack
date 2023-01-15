@@ -1,7 +1,6 @@
 import {Router} from 'express'
 import controllerQuiz from '#controllers/controller-quiz'
 import { header, body, query } from 'express-validator';
-import { ApiError } from "#middlewares/api-error-middleware";
 import { IQueryQuizAll } from '#controllers/controller-quiz/types'
 
 const router = Router()

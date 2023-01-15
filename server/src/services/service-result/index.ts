@@ -4,6 +4,7 @@ import { IRequestResultCreate, IRequestResultGetOne } from '#controllers/control
 import { serviceStatistics } from '#services/service-statistics'
 import { ApiError } from '#middlewares/api-error-middleware'
 import { ResultModel } from '#models/types'
+import { validationResult } from "express-validator";
 
 class ServiceResult {
     async create(req: IRequestResultCreate, res: Response, next: NextFunction) {
@@ -14,6 +15,12 @@ class ServiceResult {
             quizId,
             userId
         } = req.body
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            console.log('>>>> errors', errors)
+            return next(ApiError.badRequest(errors.array()))
+        }
 
         //@todo token
         try {

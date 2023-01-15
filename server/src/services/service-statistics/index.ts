@@ -1,4 +1,4 @@
-import {Response} from 'express'
+import {Response, NextFunction} from 'express'
 import {Statistics, Quiz} from '#models/index'
 import { StatisticsModel, QuizModel } from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware';
@@ -6,7 +6,7 @@ import { IRequestStatisticAll, IRequestStatisticCreate } from '#controllers/cont
 
 
 class ServiceStatistics {
-    async create(req: IRequestStatisticCreate, res: Response, next: (err: ApiError) => void) {
+    async create(req: IRequestStatisticCreate, res: Response, next: NextFunction) {
         const {
             userId
         } = req.body
@@ -30,7 +30,7 @@ class ServiceStatistics {
         res.send(statistics)
     }
 
-    async update(req: IRequestStatisticCreate, res: Response, next: (err: ApiError) => void) {
+    async update(req: IRequestStatisticCreate, res: Response, next: NextFunction) {
         const {
             userId,
             totalRightAnswers,
@@ -65,7 +65,7 @@ class ServiceStatistics {
         return updatedStatistics
     }
 
-    async getAll(req: IRequestStatisticAll, res: Response, next: (err: ApiError) => void) {
+    async getAll(req: IRequestStatisticAll, res: Response, next:NextFunction) {
         const {limit = 10, offset = 0} = req.query
         try {
             const statistics = await Statistics?.findAndCountAll<StatisticsModel>({

@@ -22,7 +22,7 @@ router.get('/',
 
 router.post('/', 
     [
-        header('authorization').isJWT().withMessage('Heт токена доступа').trim(),
+        header('authorization').notEmpty().withMessage('Heт токена доступа').trim(),
         body('recipientId').notEmpty().withMessage('not recipientId').trim(),
     ], 
     controllerQuiz.create

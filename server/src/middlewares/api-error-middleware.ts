@@ -8,28 +8,45 @@ export function errorMiddleware(err: ApiError, req: Request, res: Response, next
     }
 
     if(err instanceof ApiError) {
-        res.status(err.status).json({message: err.message})
+        if(Array.isArray(err.errors)) {
+            res.status(err.status).json(err.errors)
+        } else if(typeof err.errors === 'string') {
+            res.status(err.status).json({message: err.message})
+        }
     }
 }
 
 
 export class ApiError extends Error {
     status: number = 0
-    /*@todo fix*/
-    message: string | ValidationError[] = ''
+    message: string = ''
+    errors?: ValidationError[] = []
 
-    constructor(status: number, message: string | ValidationError[]) {
+    constructor(status: number, message: string, errors?: | ValidationError[]) {
         super()
         this.status = status,
         this.message = message
+        this.errors = errors
     }
-    static badRequest(message: string | ValidationError[]) {
-        return new ApiError(404, message)
+    static badRequest(error?: ValidationError[] | string) {
+        if(Array.isArray(error)) {
+            return new ApiError(404, '', error)
+        } else if(typeof error === 'string') {
+            return new ApiError(404, error)
+        }
     }
-    static forbidden(message: string) {
-        return new ApiError(403, message)
+    static forbidden(error?: ValidationError[] | string) {
+        if(Array.isArray(error)) {
+            return new ApiError(403, '', error)
+        } else if(typeof error === 'string') {
+            return new ApiError(403, error)
+        }
     }
-    static internal(message: string) {
-        return new ApiError(500, message)
+    static internal(error?: ValidationError[] | string) {
+        if(Array.isArray(error)) {
+            return new ApiError(500, '', error)
+        } else if(typeof error === 'string') {
+            return new ApiError(500, error)
+        }
     }
 }

@@ -4,7 +4,7 @@ import { QuestionModel, QuizModel, AnswerModel } from '#models/types'
 import { IRequestQuizAll } from '#controllers/controller-quiz/types'
 import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '#guards'
-import { IRequestQuizCreate } from './types'
+import { IRequestQuizCreate, IRequestQuizDelete } from './types'
 import jwt from 'jsonwebtoken';
 import { validationResult } from "express-validator";
 import { ApiError } from "#middlewares/api-error-middleware";
@@ -180,6 +180,17 @@ class ServiceQuiz {
                     next(ApiError.badRequest(err))
                 })
             })
+    }
+
+    async deleteQuiz(req: IRequestQuizDelete, res: Response, next: NextFunction) {
+        const {id} = req.query
+        const result = await Quiz?.destroy({
+            where: {id}
+        })
+
+        result 
+            ? res.status(200).json(result)
+            : res.status(505).json(result)
     }
 }
 

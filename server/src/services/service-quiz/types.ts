@@ -29,3 +29,12 @@ export interface IRequestQuizCreate extends Request<
     ParsedQs
 > {}
 
+export interface IRequestQuizDelete extends Request<
+    core.ParamsDictionary, 
+    Record<string, any> | undefined,
+    Record<string, any> | undefined,
+    {id: string}
+> {}
+
+
+

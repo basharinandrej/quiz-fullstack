@@ -1,6 +1,8 @@
-import { body, query } from 'express-validator';
+import { body, query, header } from 'express-validator';
 import { User } from '#models/index'
-
+import jwt from 'jsonwebtoken';
+import { isPayloadTokenGuard} from '#guards'
+import {Role} from '../../common/types/types'
 
 export const validation = {
     registrationChains() {
@@ -62,8 +64,45 @@ export const validation = {
     updateChains() {
         return [
             body('id').notEmpty().withMessage('uncorrect value').trim(),
+            header('authorization').custom((value, {req}) => {
+                const token = value.split(' ')[1]
+                const {id, myEmail} = req.body
+                if(!token) Promise.reject('Токена нет');
+
+                return jwt.verify(token,
+                    process.env.SECRET_KEY || '', 
+                    async (err: jwt.VerifyErrors | null, decode: any): Promise<boolean | string | void> => {
+                        if(err) {
+                            return Promise.reject(err)
+                        }
+                        if(isPayloadTokenGuard(decode)) {
+                            if(decode.role === Role.ADMIN) {
+                                return Promise.resolve(true)
+                            } else {
+                                if(decode.email === myEmail) {
+                                    return User?.findOne({
+                                        where: {
+                                            email: myEmail
+                                        }
+                                    })
+                                    .then((user) => {       
+                                        if(!user?.dataValues?.id) {
+                                            return Promise.resolve(`нет юзера с email ${myEmail}`)
+                                        }                                 
+                                        if(+user?.dataValues?.id === +id){
+                                            return Promise.resolve(true)
+                                        } else {
+                                            return Promise.reject('Другого пользователя может редактировать только админ')
+                                        }
+                                    })
+                                } else {
+                                    return Promise.reject('Другого пользователя можт редактировать только админ')
+                                }
+                            }
+                        } 
+                    })
+            }),
             body('id').custom(id => {
-                console.log(id)
                 return User?.findOne({
                     where: {id}
                 }).then((user) => {
@@ -75,7 +114,7 @@ export const validation = {
             body('name').custom(name => {
                 if(name) {
                     if(name.length <= 1) {
-                        return Promise.reject('name должен быть больше 1')
+                        return Promise.reject('name должен быть больше 1 символа')
                     }
                 }
                 return true
@@ -83,7 +122,7 @@ export const validation = {
             body('surname').custom(surname => {
                 if(surname) {
                     if(surname.length <= 1) {
-                        return Promise.reject('surname должен быть больше 1')
+                        return Promise.reject('surname должен быть больше 1 символа')
                     }
                 }
                 return true

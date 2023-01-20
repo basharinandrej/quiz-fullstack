@@ -2,8 +2,6 @@ import {Router} from 'express'
 import controllerQuiz from '#controllers/controller-quiz'
 import { header, body, query } from 'express-validator';
 import { IQueryQuizAll } from '#controllers/controller-quiz/types'
-import { isAdminMiddleware } from '#middlewares/is-admin-middleware';
-import { Role } from 'common/types/types';
 
 const router = Router()
 
@@ -21,8 +19,7 @@ router.get('/',
     controllerQuiz.quizAll
 )
 
-router.post('/', 
-    isAdminMiddleware(Role.ADMIN),
+router.post('/',
     [
         header('authorization').notEmpty().withMessage('Heт токена доступа').trim(),
         body('recipientId').notEmpty().withMessage('not recipientId').trim(),

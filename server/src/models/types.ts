@@ -9,8 +9,6 @@ export interface UserModel extends Model<InferAttributes<UserModel>,  InferCreat
     email: string;
     password: string;
     role: Role;
-    accessToken: string;
-    refreshToken: string
 }
 
 
@@ -67,4 +65,11 @@ export interface ResultModel extends Model<InferAttributes<ResultModel>, InferCr
     rating: CreationOptional<number>
     quizId: number
     userId: number
+}
+
+
+export interface TokenModel extends Model<InferAttributes<TokenModel>, InferCreationAttributes<TokenModel>> {
+    id: CreationOptional<number>;
+    accessToken: string,
+    refreshToken: string
 }

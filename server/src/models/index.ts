@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize'
 import {instanceSequelize} from '../db/index'
-import { UserModel, ResultModel, StatisticsModel, QuestionModel, QuizModel, AnswerModel, HintModel } from './types'
+import { TokenModel, UserModel, ResultModel, StatisticsModel, QuestionModel, QuizModel, AnswerModel, HintModel } from './types'
 import {Role} from '../common/types/types'
 
 const Quiz = instanceSequelize?.define<QuizModel>('quiz', {
@@ -59,7 +59,7 @@ const Answer = instanceSequelize?.define<AnswerModel>('answer', {
         defaultValue: false
     },
     questionId: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 })
@@ -75,7 +75,7 @@ const Hint = instanceSequelize?.define<HintModel>('hint', {
         allowNull: false
     },   
     questionId: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 })
@@ -137,13 +137,21 @@ const User = instanceSequelize?.define<UserModel>('user', {
         allowNull: false,
         defaultValue: Role.USER
     },
+})
+
+const Token = instanceSequelize?.define<TokenModel>('token', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     accessToken: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
     refreshToken: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     }
 })
 
@@ -172,7 +180,7 @@ const Statistics = instanceSequelize?.define<StatisticsModel>('statistics', {
 })
 
 
-if(Question && Quiz && Answer && Hint && Result && User && Statistics) {
+if(Question && Quiz && Answer && Hint && Result && User && Statistics && Token) {
     Quiz.hasMany(Question)
     Question.belongsTo(Quiz)
 
@@ -195,6 +203,9 @@ if(Question && Quiz && Answer && Hint && Result && User && Statistics) {
 
     User.hasOne(Statistics)
     Statistics?.belongsTo(User)
+
+    User.hasOne(Token)
+    Token?.belongsTo(User)
 }
 
-export {Question, Quiz, User, Answer, Hint, Result, Statistics}
+export {Question, Quiz, User, Answer, Hint, Result, Statistics, Token}

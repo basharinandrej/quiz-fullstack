@@ -47,15 +47,15 @@ class ServiceUser {
             email,
             password: hashPassword,
             role,
-            accessToken,
-            refreshToken
+            // accessToken,
+            // refreshToken
         })
         if(!isUserGuard(user)) return 
 
-        res.send({
-            refreshToken: user.refreshToken,
-            accessToken: user.accessToken
-        })
+        // res.send({
+        //     refreshToken: user.refreshToken,
+        //     accessToken: user.accessToken
+        // })
     }
 
     async login(req: IRequestLogin, res: Response, next: NextFunction) {
@@ -85,10 +85,10 @@ class ServiceUser {
             const accessToken = createToken(payloadToken, '30m')
             const refreshToken = createToken(payloadToken, '30d')
 
-            await User.update(
-                {accessToken, refreshToken},
-                { where: { id: candidate.id }}
-            )
+            // await User.update(
+            //     {accessToken, refreshToken},
+            //     { where: { id: candidate.id }}
+            // )
 
             res.json({
                 accessToken,

@@ -6,6 +6,7 @@ export interface IPayloadToken {
     surname: string
     email: string
     role: Role
+    id: number
 }
 
 export interface IUserForClient extends Omit<UserModel['dataValues'], 'password' | 'accessToken' | 'refreshToken'> {}

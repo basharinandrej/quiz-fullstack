@@ -7,7 +7,6 @@ export function isUserGuard(user: any): user is UserModel {
         user?.id && user?.name 
         && user?.surname && user?.email 
         && user?.password && user?.role 
-        && user?.accessToken && user?.refreshToken
     ) {
         return true
     }

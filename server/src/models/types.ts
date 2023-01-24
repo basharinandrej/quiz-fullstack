@@ -72,4 +72,5 @@ export interface TokenModel extends Model<InferAttributes<TokenModel>, InferCrea
     id: CreationOptional<number>;
     accessToken: string,
     refreshToken: string
+    userId: number
 }

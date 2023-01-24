@@ -1,5 +1,5 @@
-import {User, Result} from '#models/index'
-import {UserModel} from '#models/types'
+import {User, Result, Token} from '#models/index'
+import {TokenModel, UserModel} from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware'
 import bcrypt from 'bcrypt'
 import {Response, NextFunction} from 'express'
@@ -27,19 +27,12 @@ class ServiceUser {
         }
 
         if(!User) return
-        const payloadToken: IPayloadToken = {
-            name, surname, email, role
-        }
-
         const candidate = await User.findOne<UserModel>({
             where: {email}
         })
 
         if(candidate) return
-
         const hashPassword = await bcrypt.hash(password, 9)
-        const accessToken = createToken(payloadToken, '30m')
-        const refreshToken = createToken(payloadToken, '30d')
 
         const user = await User.create<UserModel>({
             name,
@@ -47,15 +40,23 @@ class ServiceUser {
             email,
             password: hashPassword,
             role,
-            // accessToken,
-            // refreshToken
+        })
+
+        const payloadToken: IPayloadToken = {
+            name, surname, email, role, id: user.dataValues.id
+        }
+        const accessToken = createToken(payloadToken, '30m')
+        const refreshToken = createToken(payloadToken, '30d')
+
+        const tokens = await Token?.create<TokenModel>({
+            accessToken, refreshToken, userId: user.dataValues.id
         })
         if(!isUserGuard(user)) return 
 
-        // res.send({
-        //     refreshToken: user.refreshToken,
-        //     accessToken: user.accessToken
-        // })
+        res.send({
+            refreshToken: tokens?.dataValues.refreshToken,
+            accessToken: tokens?.dataValues.accessToken
+        })
     }
 
     async login(req: IRequestLogin, res: Response, next: NextFunction) {
@@ -77,6 +78,7 @@ class ServiceUser {
 
         if(isPasswordMatch) {
             const payloadToken: IPayloadToken = {
+                id: candidate.id,
                 name: candidate.name,
                 surname: candidate.surname,
                 email: candidate.email,

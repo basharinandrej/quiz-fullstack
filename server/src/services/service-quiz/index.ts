@@ -184,6 +184,11 @@ class ServiceQuiz {
 
     async deleteQuiz(req: IRequestQuizDelete, res: Response, next: NextFunction) {
         const {id} = req.query
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return next(ApiError.badRequest(errors.array()))
+        }
+        
         const result = await Quiz?.destroy({
             where: {id}
         })

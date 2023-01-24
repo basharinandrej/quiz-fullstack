@@ -87,10 +87,10 @@ class ServiceUser {
             const accessToken = createToken(payloadToken, '30m')
             const refreshToken = createToken(payloadToken, '30d')
 
-            // await User.update(
-            //     {accessToken, refreshToken},
-            //     { where: { id: candidate.id }}
-            // )
+            await Token?.update(
+                {accessToken, refreshToken},
+                { where: { id: candidate.id }}
+            )
 
             res.json({
                 accessToken,

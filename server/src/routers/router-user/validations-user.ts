@@ -54,7 +54,7 @@ export const validation = {
                 return User?.findOne({
                     where: {id}
                 }).then((user) => {
-                    if(!user) {
+                    if(!user?.dataValues.id) {
                         return Promise.reject(`User'a с id - ${id} нет`)
                     }
                 })

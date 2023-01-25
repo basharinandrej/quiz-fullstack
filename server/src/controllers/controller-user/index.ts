@@ -66,7 +66,7 @@ class ControllerUser {
 
     async update(req: IRequestUpdateUser, res: Response, next: NextFunction) {
         try {
-            serviceUser.update(req, res, next)
+            serviceUser.update(req, res)
         } catch (error) {
             if(error instanceof Error) {
                 next(ApiError.internal(error.message))

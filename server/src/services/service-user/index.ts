@@ -21,11 +21,6 @@ class ServiceUser {
     async registration(req: IRequestRegistration, res: Response, next: NextFunction) {
         const {name, surname, email, role = Role.USER, password} = req.body
 
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return next(ApiError.badRequest(errors.array()))
-        }
-
         if(!User) return
         const candidate = await User.findOne<UserModel>({
             where: {email}
@@ -63,11 +58,6 @@ class ServiceUser {
         if(!User) return
         const {email, password} = req.body
 
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return next(ApiError.badRequest(errors.array()))
-        }
-
         const candidate = await User.findOne<UserModel>({
             where: {email}
         })
@@ -104,11 +94,6 @@ class ServiceUser {
     async getOne(req: IRequestGetOneUser, res: Response, next: NextFunction) {
         if(!User) return
         const { id } = req.query
-
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return next(ApiError.badRequest(errors.array()))
-        }
 
         const candidate = await User.findOne<UserModel>({
             where: { id },
@@ -156,11 +141,6 @@ class ServiceUser {
     async delete(req: IRequestDeleteUser, res: Response, next: NextFunction) {
         const { id } = req.query
 
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return next(ApiError.badRequest(errors.array()))
-        }
-
         const result = await User?.destroy({
             where: {
                 id
@@ -172,13 +152,8 @@ class ServiceUser {
             : res.status(500).json(result)
     }
 
-    async update(req: IRequestUpdateUser, res: Response, next: NextFunction) {
+    async update(req: IRequestUpdateUser, res: Response) {
         const {id, name, surname } = req.body
-
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return next(ApiError.badRequest(errors.array()))
-        }
 
         const result = await User?.update(
             { name, surname }, 

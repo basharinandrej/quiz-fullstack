@@ -13,7 +13,6 @@ export function isAdminMiddleware(role: Role) {
             return next(ApiError.badRequest('no token'))
         }
 
-
         jwt.verify(token, process.env.SECRET_KEY || '', async (err: jwt.VerifyErrors | null, decode: any) => {
             err?.message && next(ApiError.badRequest(err?.message))
 

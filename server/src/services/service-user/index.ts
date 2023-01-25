@@ -190,7 +190,7 @@ class ServiceUser {
         );
 
         if(result) {
-            const updatedUser = await User?.findOne(
+            const updatedUser = await User?.findOne<UserModel>(
                 {where: {id}}
             )
             res.status(200).json({

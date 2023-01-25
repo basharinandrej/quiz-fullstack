@@ -58,6 +58,7 @@ export interface HintModel extends Model<InferAttributes<HintModel>, InferCreati
 }
 
 
+
 export interface ResultModel extends Model<InferAttributes<ResultModel>, InferCreationAttributes<ResultModel>> {
     id: CreationOptional<number>;
     totalRightAnswers: number
@@ -66,6 +67,7 @@ export interface ResultModel extends Model<InferAttributes<ResultModel>, InferCr
     quizId: number
     userId: number
 }
+
 
 
 export interface TokenModel extends Model<InferAttributes<TokenModel>, InferCreationAttributes<TokenModel>> {

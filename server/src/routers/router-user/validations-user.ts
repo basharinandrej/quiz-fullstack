@@ -3,6 +3,7 @@ import { User } from '#models/index'
 import jwt from 'jsonwebtoken';
 import { isPayloadTokenGuard} from '#guards'
 import {Role} from '../../common/types/types'
+import {toNumber} from '../../common/utils/toNumber'
 
 export const validation = {
     registrationChains() {
@@ -64,43 +65,38 @@ export const validation = {
     updateChains() {
         return [
             body('id').notEmpty().withMessage('uncorrect value').trim(),
-            header('authorization').custom((value, {req}) => {
-                const token = value.split(' ')[1]
-                const {id, myEmail} = req.body
-                if(!token) Promise.reject('Токена нет');
+            header('authorization').custom( async (value, {req}) => {
+                const {id} = req.body
 
-                return jwt.verify(token,
-                    process.env.SECRET_KEY || '', 
-                    async (err: jwt.VerifyErrors | null, decode: any): Promise<boolean | string | void> => {
-                        if(err) {
-                            return Promise.reject(err)
-                        }
-                        if(isPayloadTokenGuard(decode)) {
-                            if(decode.role === Role.ADMIN) {
-                                return Promise.resolve(true)
-                            } else {
-                                if(decode.email === myEmail) {
-                                    return User?.findOne({
-                                        where: {
-                                            email: myEmail
-                                        }
-                                    })
-                                    .then((user) => {       
-                                        if(!user?.dataValues?.id) {
-                                            return Promise.resolve(`нет юзера с email ${myEmail}`)
-                                        }                                 
-                                        if(+user?.dataValues?.id === +id){
-                                            return Promise.resolve(true)
-                                        } else {
-                                            return Promise.reject('Другого пользователя может редактировать только админ')
-                                        }
-                                    })
-                                } else {
-                                    return Promise.reject('Другого пользователя можт редактировать только админ')
-                                }
+                const token = value.split(' ')[1]
+                if(!token) return Promise.reject('Токена нет');
+
+                const decode = jwt.verify(token, process.env.SECRET_KEY || '')
+
+                if(!isPayloadTokenGuard(decode)) return 
+
+                if(decode.role === Role.ADMIN) {
+                    return true
+                } else {
+                    if(toNumber(decode.id) === toNumber(id)) {
+                        const user = await User?.findOne({
+                            where: {
+                                id
                             }
-                        } 
-                    })
+                        })
+                        if(!user?.dataValues?.id) {
+                            return Promise.resolve(`нет юзера с id ${id}`)
+                        }                                 
+                        if(toNumber(user?.dataValues?.id) === toNumber(id)){
+                            return Promise.resolve(true)
+                        } else {
+                            return Promise.reject('Другого пользователя может редактировать только админ')
+                        }
+                    } else {
+                        return Promise.reject('Другого пользователя можт редактировать только админ')
+                    }
+                }
+            
             }),
             body('id').custom(id => {
                 return User?.findOne({

@@ -129,7 +129,7 @@ class ServiceUser {
         res.send(userForClient)
     }
 
-    async delete(req: IRequestDeleteUser, res: Response, next: NextFunction) {
+    async delete(req: IRequestDeleteUser, res: Response) {
         const { id } = req.query
 
         const result = await User?.destroy({

@@ -1,10 +1,13 @@
-import { body, query, header } from 'express-validator';
+import { body, query, header, Meta } from 'express-validator';
 import { User } from '#models/index'
 import jwt from 'jsonwebtoken';
 import { isPayloadTokenGuard} from '#guards'
 import {Role} from '../../common/types/types'
 import {toNumber} from '../../common/utils/toNumber'
 import {checkIsValidRole} from '../../common/utils/checkIsValidRole'
+import {IRequestDeleteUser} from '#controllers/controller-user/types'
+
+
 
 export const validation = {
     registrationChains() {
@@ -59,7 +62,39 @@ export const validation = {
                         return Promise.reject(`User'a с id - ${id} нет`)
                     }
                 })
-            })
+            }),
+            header('authorization').custom( async (value, {req}: Meta) => {
+                const {id} = (req as IRequestDeleteUser)?.query
+
+                const token = value.split(' ')[1]
+                if(!token) return Promise.reject('Токена нет');
+
+                const decode = jwt.verify(token, process.env.SECRET_KEY || '')
+
+                if(!isPayloadTokenGuard(decode)) return 
+
+                if(decode.role === Role.ADMIN) {
+                    return true
+                } else {
+                    // role === USER
+                    if(toNumber(decode.id) === toNumber(id)) {
+                        const user = await User?.findOne({
+                            where: {
+                                id
+                            }
+                        })
+                        if(!user?.dataValues?.id) {
+                            return Promise.resolve(`нет юзера с id ${id}`)
+                        }                               
+                        if(toNumber(user?.dataValues?.id) === toNumber(id)){
+                            return Promise.resolve(true)
+                        }
+                    } else {
+                        return Promise.reject('Другого пользователя может удалить только ADMIN')
+                    }
+                }
+            
+            }),
         ]
     },
 
@@ -73,7 +108,6 @@ export const validation = {
                 if(!token) return Promise.reject('Токена нет');
 
                 const decode = jwt.verify(token, process.env.SECRET_KEY || '')
-                console.log('req.body.role)', req.body)
 
                 if(!isPayloadTokenGuard(decode)) return 
 
@@ -85,6 +119,7 @@ export const validation = {
                     }
                     return true
                 } else {
+                    // role === USER
                     if(toNumber(decode.id) === toNumber(id)) {
                         const user = await User?.findOne({
                             where: {

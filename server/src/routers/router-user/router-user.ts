@@ -1,10 +1,7 @@
 import {Router} from 'express'
 import {validation} from './validations-user'
 import {controllerUser} from '#controllers/controller-user'
-import { isAdminMiddleware } from '#middlewares/is-admin-middleware'
 import { sendErrorsMiddleware } from '#middlewares/send-errors-middleware'
-import { Role } from 'common/types/types'
-
 
 const router = Router()
 
@@ -30,7 +27,6 @@ router.get('/getAll', controllerUser.getAll)
 
 router.delete('/',
     validation.deleteChains(),
-    isAdminMiddleware(Role.ADMIN),
     sendErrorsMiddleware,
     controllerUser.delete
 )

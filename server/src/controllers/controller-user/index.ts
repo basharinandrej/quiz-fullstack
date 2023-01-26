@@ -56,7 +56,7 @@ class ControllerUser {
 
     async delete(req: IRequestDeleteUser, res: Response, next: NextFunction) {
         try {
-            serviceUser.delete(req, res, next )
+            serviceUser.delete(req, res)
         } catch (error) {
             if(error instanceof Error) {
                 next(ApiError.internal(error.message))

@@ -3,7 +3,7 @@ import {TokenModel, UserModel} from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware'
 import bcrypt from 'bcrypt'
 import {Response, NextFunction} from 'express'
-import { IPayloadToken, IUserForClient } from './types'
+import { IPayloadToken } from './types'
 import { 
     IRequestGetAllUsers,
     IRequestGetOneUser,
@@ -14,7 +14,8 @@ import {
 } from '#controllers/controller-user/types'
 import { isUserGuard } from '#guards'
 import { Role } from '../../common/types/types'
-import { getTokens } from './utils'
+import { generateTokens } from './utils'
+import { UserDto } from '#dto/dto-user'
 
 class ServiceUser {
     async registration(req: IRequestRegistration, res: Response, next: NextFunction) {
@@ -28,7 +29,7 @@ class ServiceUser {
             surname,
             email,
             password: hashPassword,
-            role,
+            role, 
         })
         if(!isUserGuard(user)) {
             next(ApiError.internal('Не удалось зарегистровать юзера'))
@@ -37,7 +38,7 @@ class ServiceUser {
         const payloadToken: IPayloadToken = {
             name, surname, email, role, id: user.dataValues.id
         }
-        const {accessToken, refreshToken} = getTokens(payloadToken)
+        const {accessToken, refreshToken} = generateTokens(payloadToken)
         const tokens = await Token?.create<TokenModel>({
             accessToken, refreshToken, userId: user.dataValues.id
         })
@@ -59,14 +60,7 @@ class ServiceUser {
         
         const isPasswordMatch = await bcrypt.compare(password, candidate.password)
         if(isPasswordMatch) {
-            const payloadToken: IPayloadToken = {
-                id: candidate.id,
-                name: candidate.name,
-                surname: candidate.surname,
-                email: candidate.email,
-                role: candidate.role
-            }
-            const {accessToken, refreshToken} = getTokens(payloadToken)
+            const {accessToken, refreshToken} = generateTokens(new UserDto(candidate))
 
             await Token?.update(
                 {accessToken, refreshToken},
@@ -92,14 +86,7 @@ class ServiceUser {
         })
 
         if(candidate?.dataValues.id) {
-            const candidateForClient: IUserForClient = {
-                id: candidate?.dataValues.id,
-                name: candidate?.dataValues.name,
-                surname: candidate?.dataValues.surname,
-                email: candidate?.dataValues.email,
-                role: candidate?.dataValues.role
-            }
-            res.send(candidateForClient)
+            res.send(new UserDto(candidate))
         } else {
             return next(ApiError.badRequest('Пользователь не найдён'))
         }
@@ -113,15 +100,7 @@ class ServiceUser {
             offset
         })
 
-        const rowsForClient = users?.rows.map((row) => {
-            return {
-                id: row.dataValues.id,
-                name: row.dataValues.name,
-                surname: row.dataValues.surname,
-                email: row.dataValues.email,
-                role: row.dataValues.role,
-            }
-        })
+        const rowsForClient = users?.rows.map((row) => new UserDto(row))
         const userForClient = {
             ...users,
             rows: rowsForClient
@@ -133,9 +112,7 @@ class ServiceUser {
         const { id } = req.query
 
         const result = await User?.destroy({
-            where: {
-                id
-            }
+            where: {id}
         })
 
         result 
@@ -143,7 +120,7 @@ class ServiceUser {
             : res.status(500).json(result)
     }
 
-    async update(req: IRequestUpdateUser, res: Response) {
+    async update(req: IRequestUpdateUser, res: Response, next: NextFunction) {
         const {id, name, surname, role } = req.body
 
         const result = await User?.update(
@@ -155,13 +132,9 @@ class ServiceUser {
             const updatedUser = await User?.findOne<UserModel>(
                 {where: {id}}
             )
-            res.status(200).json({
-                id: updatedUser?.id,
-                name: updatedUser?.name,
-                surname: updatedUser?.surname,
-                email: updatedUser?.email,
-                role: updatedUser?.role
-            })
+            if(!isUserGuard(updatedUser)) return
+            
+            res.status(200).json(new UserDto(updatedUser))
         } else {
             res.status(500).json(result)
         }

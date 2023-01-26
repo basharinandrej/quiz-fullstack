@@ -11,7 +11,7 @@ function createToken(payloadToken: IPayloadToken, expiresIn: string) {
 }
 
 
-export function getTokens(payloadToken: IPayloadToken) {
+export function generateTokens(payloadToken: IPayloadToken) {
     const accessToken = createToken(payloadToken, '30m')
     const refreshToken = createToken(payloadToken, '30d')
 

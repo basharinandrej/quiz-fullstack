@@ -8,5 +8,3 @@ export interface IPayloadToken {
     role: Role
     id: number
 }
-
-export interface IUserForClient extends Omit<UserModel['dataValues'], 'password' | 'accessToken' | 'refreshToken'> {}

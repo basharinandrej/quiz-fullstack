@@ -16,7 +16,6 @@ class ServiceResult {
             userId
         } = req.body
 
-        //@todo token
         try {
             const result = await Result?.create<ResultModel>({
                 totalRightAnswers,

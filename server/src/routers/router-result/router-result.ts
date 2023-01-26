@@ -5,7 +5,7 @@ import { sendErrorsMiddleware } from '#middlewares/send-errors-middleware'
 
 const router = Router()
 
-router.post('/', 
+router.post('/',  
     validation.createChain(),
     sendErrorsMiddleware,
     controllerResult.create

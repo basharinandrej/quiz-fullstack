@@ -3,7 +3,7 @@ import * as core from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
 import {Role} from '../../common/types/types'
 
-interface IBodyRegistration {
+export interface IBodyRegistration {
     name: string
     surname: string
     email: string

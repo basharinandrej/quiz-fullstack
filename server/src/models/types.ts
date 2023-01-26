@@ -72,7 +72,6 @@ export interface ResultModel extends Model<InferAttributes<ResultModel>, InferCr
 
 export interface TokenModel extends Model<InferAttributes<TokenModel>, InferCreationAttributes<TokenModel>> {
     id: CreationOptional<number>;
-    accessToken: string,
     refreshToken: string
     userId: number
 }

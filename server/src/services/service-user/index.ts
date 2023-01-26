@@ -14,7 +14,7 @@ import {
 } from '#controllers/controller-user/types'
 import { isUserGuard } from '#guards'
 import { Role } from '../../common/types/types'
-import { generateTokens } from './utils'
+import { generateTokens, saveToken } from './utils'
 import { UserDto } from '#dto/dto-user'
 
 class ServiceUser {
@@ -33,19 +33,14 @@ class ServiceUser {
         })
         if(!isUserGuard(user)) {
             next(ApiError.internal('Не удалось зарегистровать юзера'))
-        } 
-
-        const payloadToken: IPayloadToken = {
-            name, surname, email, role, id: user.dataValues.id
         }
-        const {accessToken, refreshToken} = generateTokens(payloadToken)
-        const tokens = await Token?.create<TokenModel>({
-            accessToken, refreshToken, userId: user.dataValues.id
-        })
+        
+        const {accessToken, refreshToken} = generateTokens(new UserDto({...req.body, id: user.dataValues.id}))
+        await saveToken(refreshToken, user.dataValues.id)
 
         res.send({
-            refreshToken: tokens?.dataValues.refreshToken,
-            accessToken: tokens?.dataValues.accessToken
+            refreshToken,
+            accessToken
         })
     }
 
@@ -63,7 +58,7 @@ class ServiceUser {
             const {accessToken, refreshToken} = generateTokens(new UserDto(candidate))
 
             await Token?.update(
-                {accessToken, refreshToken},
+                {refreshToken},
                 { where: { id: candidate.id }}
             )
 
@@ -120,7 +115,7 @@ class ServiceUser {
             : res.status(500).json(result)
     }
 
-    async update(req: IRequestUpdateUser, res: Response, next: NextFunction) {
+    async update(req: IRequestUpdateUser, res: Response) {
         const {id, name, surname, role } = req.body
 
         const result = await User?.update(
@@ -133,7 +128,7 @@ class ServiceUser {
                 {where: {id}}
             )
             if(!isUserGuard(updatedUser)) return
-            
+
             res.status(200).json(new UserDto(updatedUser))
         } else {
             res.status(500).json(result)

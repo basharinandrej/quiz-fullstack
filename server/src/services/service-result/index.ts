@@ -16,11 +16,6 @@ class ServiceResult {
             userId
         } = req.body
 
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return next(ApiError.badRequest(errors.array()))
-        }
-
         //@todo token
         try {
             const result = await Result?.create<ResultModel>({

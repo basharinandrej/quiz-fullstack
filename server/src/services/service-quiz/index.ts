@@ -14,11 +14,6 @@ class ServiceQuiz {
         const { recipientId, authorId } = req.query
         const token = req.headers.authorization?.split(' ')[1]
 
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return next(ApiError.badRequest(errors.array()))
-        }
-
         token && jwt.verify(token, process.env.SECRET_KEY || '', async (err, decode: any) => {
             if(err instanceof Error) {
                 return next(ApiError.internal(err?.message))
@@ -60,11 +55,6 @@ class ServiceQuiz {
         const {title, timer = null, recipientId, questions} = req.body
 
         const token = req.headers.authorization?.split(' ')[1]
-            const errors = validationResult(req)
-            if (!errors.isEmpty()) {
-                return next(ApiError.badRequest(errors.array()))
-            }
-
             token && jwt.verify(token, process.env.SECRET_KEY || '', async (err, decode: any) => {
                 if(err) {
                     if(err instanceof Error) {
@@ -184,10 +174,6 @@ class ServiceQuiz {
 
     async deleteQuiz(req: IRequestQuizDelete, res: Response, next: NextFunction) {
         const {id} = req.query
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return next(ApiError.badRequest(errors.array()))
-        }
         
         const result = await Quiz?.destroy({
             where: {id}

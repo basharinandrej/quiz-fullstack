@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import {routerUser} from './router-user/router-user'
-import {routerQuiz} from '../routers/router-quiz'
+import {routerQuiz} from './router-quiz/router-quiz'
 import {routerResult} from '../routers/router-result'
 import {routerStatistics} from '../routers/router-statistic'
 

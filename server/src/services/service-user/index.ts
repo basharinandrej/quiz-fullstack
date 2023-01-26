@@ -14,8 +14,7 @@ import {
 } from '#controllers/controller-user/types'
 import { isUserGuard } from '#guards'
 import { Role } from '../../common/types/types'
-import { createToken } from './utils'
-import { validationResult } from "express-validator";
+import { getTokens } from './utils'
 
 class ServiceUser {
     async registration(req: IRequestRegistration, res: Response, next: NextFunction) {
@@ -40,8 +39,7 @@ class ServiceUser {
         const payloadToken: IPayloadToken = {
             name, surname, email, role, id: user.dataValues.id
         }
-        const accessToken = createToken(payloadToken, '30m')
-        const refreshToken = createToken(payloadToken, '30d')
+        const {accessToken, refreshToken} = getTokens(payloadToken)
 
         const tokens = await Token?.create<TokenModel>({
             accessToken, refreshToken, userId: user.dataValues.id
@@ -74,8 +72,7 @@ class ServiceUser {
                 email: candidate.email,
                 role: candidate.role
             }
-            const accessToken = createToken(payloadToken, '30m')
-            const refreshToken = createToken(payloadToken, '30d')
+            const {accessToken, refreshToken} = getTokens(payloadToken)
 
             await Token?.update(
                 {accessToken, refreshToken},

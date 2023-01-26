@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { isPayloadTokenGuard} from '#guards'
 import {Role} from '../../common/types/types'
 import {toNumber} from '../../common/utils/toNumber'
+import {checkIsValidRole} from '../../common/utils/checkIsValidRole'
 
 export const validation = {
     registrationChains() {
@@ -72,10 +73,16 @@ export const validation = {
                 if(!token) return Promise.reject('Токена нет');
 
                 const decode = jwt.verify(token, process.env.SECRET_KEY || '')
+                console.log('req.body.role)', req.body)
 
                 if(!isPayloadTokenGuard(decode)) return 
 
                 if(decode.role === Role.ADMIN) {
+                    if(req.body.role) {
+                        if(!checkIsValidRole(req.body.role)) {
+                            return Promise.reject(`Неверная роль ${req.body.role}`)
+                        }
+                    }
                     return true
                 } else {
                     if(toNumber(decode.id) === toNumber(id)) {
@@ -86,6 +93,9 @@ export const validation = {
                         })
                         if(!user?.dataValues?.id) {
                             return Promise.resolve(`нет юзера с id ${id}`)
+                        }
+                        if(req.body.role) {
+                            return Promise.reject('Редактировать роль может только ADMIN')
                         }                                 
                         if(toNumber(user?.dataValues?.id) === toNumber(id)){
                             return Promise.resolve(true)

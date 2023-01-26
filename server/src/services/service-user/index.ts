@@ -21,13 +21,8 @@ class ServiceUser {
         const {name, surname, email, role = Role.USER, password} = req.body
 
         if(!User) return
-        const candidate = await User.findOne<UserModel>({
-            where: {email}
-        })
 
-        if(candidate) return
         const hashPassword = await bcrypt.hash(password, 9)
-
         const user = await User.create<UserModel>({
             name,
             surname,
@@ -35,16 +30,17 @@ class ServiceUser {
             password: hashPassword,
             role,
         })
+        if(!isUserGuard(user)) {
+            next(ApiError.internal('Не удалось зарегистровать юзера'))
+        } 
 
         const payloadToken: IPayloadToken = {
             name, surname, email, role, id: user.dataValues.id
         }
         const {accessToken, refreshToken} = getTokens(payloadToken)
-
         const tokens = await Token?.create<TokenModel>({
             accessToken, refreshToken, userId: user.dataValues.id
         })
-        if(!isUserGuard(user)) return 
 
         res.send({
             refreshToken: tokens?.dataValues.refreshToken,
@@ -59,11 +55,9 @@ class ServiceUser {
         const candidate = await User.findOne<UserModel>({
             where: {email}
         })
-
         if(!candidate) return
         
         const isPasswordMatch = await bcrypt.compare(password, candidate.password)
-
         if(isPasswordMatch) {
             const payloadToken: IPayloadToken = {
                 id: candidate.id,
@@ -150,15 +144,11 @@ class ServiceUser {
     }
 
     async update(req: IRequestUpdateUser, res: Response) {
-        const {id, name, surname } = req.body
+        const {id, name, surname, role } = req.body
 
         const result = await User?.update(
-            { name, surname }, 
-            {
-                where: {
-                    id
-                }
-            }
+            { name, surname, role }, 
+            {where: {id}}
         );
 
         if(result) {

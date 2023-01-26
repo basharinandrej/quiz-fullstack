@@ -1,9 +1,8 @@
 import {User, Result, Token} from '#models/index'
-import {TokenModel, UserModel} from '#models/types'
+import {UserModel} from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware'
 import bcrypt from 'bcrypt'
 import {Response, NextFunction} from 'express'
-import { IPayloadToken } from './types'
 import { 
     IRequestGetAllUsers,
     IRequestGetOneUser,
@@ -13,8 +12,8 @@ import {
     IRequestUpdateUser
 } from '#controllers/controller-user/types'
 import { isUserGuard } from '#guards'
+import {serviceToken} from '#services/service-token'
 import { Role } from '../../common/types/types'
-import { generateTokens, saveToken } from './utils'
 import { UserDto } from '#dto/dto-user'
 
 class ServiceUser {
@@ -35,8 +34,8 @@ class ServiceUser {
             next(ApiError.internal('Не удалось зарегистровать юзера'))
         }
         
-        const {accessToken, refreshToken} = generateTokens(new UserDto({...req.body, id: user.dataValues.id}))
-        await saveToken(refreshToken, user.dataValues.id)
+        const {accessToken, refreshToken} = serviceToken.generateTokens(new UserDto({...req.body, id: user.dataValues.id}))
+        await serviceToken.saveToken(refreshToken, user.dataValues.id)
 
         res.send({
             refreshToken,
@@ -55,7 +54,7 @@ class ServiceUser {
         
         const isPasswordMatch = await bcrypt.compare(password, candidate.password)
         if(isPasswordMatch) {
-            const {accessToken, refreshToken} = generateTokens(new UserDto(candidate))
+            const {accessToken, refreshToken} = serviceToken.generateTokens(new UserDto(candidate))
 
             await Token?.update(
                 {refreshToken},

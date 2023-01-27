@@ -2,7 +2,7 @@ import {Router} from 'express'
 import {routerUser} from './router-user/router-user'
 import {routerQuiz} from './router-quiz/router-quiz'
 import {routerResult} from './router-result/router-result'
-import {routerStatistics} from '../routers/router-statistic'
+import {routerStatistics} from './router-statistic/router-statistic'
 
 const router = Router()
 

@@ -2,7 +2,11 @@ import {Response, NextFunction} from 'express'
 import {Statistics, Quiz} from '#models/index'
 import { StatisticsModel, QuizModel } from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware';
-import { IRequestStatisticAll, IRequestStatisticCreate } from '#controllers/controller-statistics/types'
+import { 
+    IRequestStatisticAll, 
+    IRequestStatisticCreate,
+    IRequestStatisticsDelete
+ } from '#controllers/controller-statistics/types'
 
 
 class ServiceStatistics {
@@ -71,6 +75,24 @@ class ServiceStatistics {
 
             res.send(statistics)
         } catch (error) { 
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
+        }
+    }
+
+    async delete(req: IRequestStatisticsDelete, res: Response, next: NextFunction) {
+        const {id} = req.query
+
+        try {
+            const result = await Statistics?.destroy({
+                where: {id}
+            })
+
+            result 
+                ? res.sendStatus(200).send(result)
+                : res.sendStatus(500).send(result)
+        } catch (error) {
             if(error instanceof Error) {
                 next(ApiError.internal(error.message))
             }

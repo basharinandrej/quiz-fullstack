@@ -10,3 +10,8 @@ export interface IRequestStatisticAll extends Request<unknown, unknown, unknown,
 
 
 export interface IRequestStatisticCreate extends IRequestResultCreate {}
+
+interface IQueryStatisticDelete {
+    id: number
+}
+export interface IRequestStatisticsDelete extends Request<unknown, unknown, unknown,IQueryStatisticDelete > {}

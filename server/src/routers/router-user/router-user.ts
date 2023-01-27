@@ -37,4 +37,8 @@ router.put('/',
     controllerUser.update
 )
 
+router.get('/logout',
+    controllerUser.logout
+)
+
 export const routerUser = router

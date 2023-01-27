@@ -16,7 +16,7 @@ export class ServiceToken {
     }
     
     public saveToken(token: string, id: number) {
-        return Token?.create<TokenModel>({
+        Token?.create<TokenModel>({
             refreshToken: token, userId: id
         })
     }

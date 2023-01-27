@@ -10,7 +10,6 @@ export interface IBodyRegistration {
     role: Role
     password: string
 }
-
 export interface IRequestRegistration extends Request<Record<string, any> | undefined, Record<string, any> | undefined, IBodyRegistration> {}
 
 
@@ -18,8 +17,8 @@ interface IBodyLogin {
     email: string
     password: string
 }
-
 export interface IRequestLogin extends Request<Record<string, any> | undefined, Record<string, any> | undefined, IBodyLogin> {}
+
 
 interface IQueryGetAllUsers extends Record<string, unknown>{
     limit: number,
@@ -28,21 +27,23 @@ interface IQueryGetAllUsers extends Record<string, unknown>{
 export interface IRequestGetAllUsers extends Pick<Request<unknown, unknown, unknown, IQueryGetAllUsers>, 'query'> {}
 
 
-
 interface IQueryGetOneUser extends Record<string, unknown>{
     id: number,
 }
-
 export interface IRequestGetOneUser extends Pick<Request<unknown, unknown, unknown, IQueryGetOneUser>, 'query'> {}
-
 
 
 interface IQueryDeleteUser extends Record<string, unknown>{
     id: number,
 }
-
 export interface IRequestDeleteUser extends Pick<Request<unknown, unknown, unknown, IQueryDeleteUser>, 'query' | 'headers'> {}
 
 
 export interface IRequestUpdateUser extends Request<
     core.ParamsDictionary, any, any, ParsedQs, Record<string, any>> {}
+
+
+interface IQueryLogoutUser extends Record<string, unknown>{
+    id: number,
+}
+export interface IRequestLogoutUser extends Pick<Request<unknown, unknown, unknown, IQueryLogoutUser>, 'query'> {}

@@ -1,5 +1,6 @@
 import 'module-alias/register'
 import express, {Express} from 'express'
+import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv';
 import {instanceSequelize} from './db/index'
 import router from './routers/index'
@@ -11,6 +12,7 @@ const app: Express = express()
 const PORT = process.env.PORT || 3000
 
 app.use(express.json())
+app.use(cookieParser())
 app.use('/api', router)
 app.use(errorMiddleware)
 

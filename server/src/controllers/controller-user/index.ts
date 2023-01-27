@@ -1,4 +1,4 @@
-import {Response, NextFunction} from 'express'
+import {Response, Request, NextFunction} from 'express'
 import dotenv from 'dotenv';
 import { serviceUser } from '#services/service-user'
 import {
@@ -7,7 +7,8 @@ import {
     IRequestLogin,
     IRequestRegistration,
     IRequestDeleteUser,
-    IRequestUpdateUser
+    IRequestUpdateUser,
+    IRequestLogoutUser
 } from './types'
 import { ApiError } from '#middlewares/api-error-middleware';
 
@@ -67,6 +68,16 @@ class ControllerUser {
     async update(req: IRequestUpdateUser, res: Response, next: NextFunction) {
         try {
             serviceUser.update(req, res)
+        } catch (error) {
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
+        }
+    }
+
+    async logout(req: IRequestLogoutUser, res: Response, next: NextFunction) {
+        try {
+            serviceUser.logout(req, res)
         } catch (error) {
             if(error instanceof Error) {
                 next(ApiError.internal(error.message))

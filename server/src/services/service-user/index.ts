@@ -9,7 +9,8 @@ import {
     IRequestLogin,
     IRequestRegistration,
     IRequestDeleteUser,
-    IRequestUpdateUser
+    IRequestUpdateUser,
+    IRequestLogoutUser
 } from '#controllers/controller-user/types'
 import { isUserGuard } from '#guards'
 import {serviceToken} from '#services/service-token'
@@ -34,12 +35,16 @@ class ServiceUser {
             next(ApiError.internal('Не удалось зарегистровать юзера'))
         }
         
-        const {accessToken, refreshToken} = serviceToken.generateTokens(new UserDto({...req.body, id: user.dataValues.id}))
+        const userDto = new UserDto({...req.body, id: user.dataValues.id})
+        const {accessToken, refreshToken} = serviceToken.generateTokens({...userDto})
         await serviceToken.saveToken(refreshToken, user.dataValues.id)
 
+        res.cookie('refreshToken', refreshToken, {httpOnly: true})
         res.send({
-            refreshToken,
-            accessToken
+            accessToken,
+            user: {
+                ...userDto
+            }
         })
     }
 
@@ -54,7 +59,8 @@ class ServiceUser {
         
         const isPasswordMatch = await bcrypt.compare(password, candidate.password)
         if(isPasswordMatch) {
-            const {accessToken, refreshToken} = serviceToken.generateTokens(new UserDto(candidate))
+            const userDto = new UserDto(candidate)
+            const {accessToken, refreshToken} = serviceToken.generateTokens(userDto)
 
             await Token?.update(
                 {refreshToken},
@@ -80,7 +86,8 @@ class ServiceUser {
         })
 
         if(candidate?.dataValues.id) {
-            res.send(new UserDto(candidate))
+            const userDto = new UserDto(candidate)
+            res.send(userDto)
         } else {
             return next(ApiError.badRequest('Пользователь не найдён'))
         }
@@ -94,7 +101,7 @@ class ServiceUser {
             offset
         })
 
-        const rowsForClient = users?.rows.map((row) => new UserDto(row))
+        const rowsForClient = users?.rows.map((user) => new UserDto(user))
         const userForClient = {
             ...users,
             rows: rowsForClient
@@ -128,11 +135,23 @@ class ServiceUser {
             )
             if(!isUserGuard(updatedUser)) return
 
-            res.status(200).json(new UserDto(updatedUser))
+            const userDto = new UserDto(updatedUser)
+            res.status(200).json(userDto)
         } else {
             res.status(500).json(result)
         }
+    }
 
+    async logout(req: IRequestLogoutUser, res: Response) {
+        const {id} = req.query
+
+        const result = Token?.destroy({
+            where: {userId: id}
+        })
+
+        result 
+            ? res.status(200).json(result)
+            : res.status(500).json(result)
     }
 }
 

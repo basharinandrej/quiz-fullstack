@@ -25,7 +25,6 @@ export class ServiceToken {
     }
 
     public validationToken(token: string, next?: NextFunction) {
-
         try {
             return jwt.verify(token, process.env.SECRET_KEY || '')
         } catch (error) {

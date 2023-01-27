@@ -1,13 +1,12 @@
 import { body, query, header, Meta, cookie } from 'express-validator';
 import { User } from '#models/index'
-import jwt from 'jsonwebtoken';
 import { isPayloadTokenGuard} from '#guards'
 import {Role} from '#common/types/types'
 import {toNumber} from '#common/utils/toNumber'
-import {checkIsValidRole} from '../../common/utils/checkIsValidRole'
+import {checkIsValidRole} from '#common/utils/checkIsValidRole'
+import {extractAccessToken} from '#common/utils/extractToken'
 import {IRequestDeleteUser} from '#controllers/controller-user/types'
 import {serviceToken} from '#services/service-token'
-
 
 
 export const validation = {
@@ -117,45 +116,46 @@ export const validation = {
             body('id').notEmpty().withMessage('uncorrect value').trim(),
             header('authorization').custom( async (value, {req}) => {
                 const {id} = req.body
+                
+                try {
+                    const token = extractAccessToken(value)
+                    const decode = serviceToken.validationToken(token)
 
-                const token = value.split(' ')[1]
-                if(!token) return Promise.reject('Токена нет');
-
-                const decode = jwt.verify(token, process.env.SECRET_KEY || '')
-
-                if(!isPayloadTokenGuard(decode)) return 
-
-                if(decode.role === Role.ADMIN) {
-                    if(req.body.role) {
-                        if(!checkIsValidRole(req.body.role)) {
-                            return Promise.reject(`Неверная роль ${req.body.role}`)
-                        }
-                    }
-                    return true
-                } else {
-                    // role === USER
-                    if(toNumber(decode.id) === toNumber(id)) {
-                        const user = await User?.findOne({
-                            where: {
-                                id
-                            }
-                        })
-                        if(!user?.dataValues?.id) {
-                            return Promise.resolve(`нет юзера с id ${id}`)
-                        }
+                    if(!isPayloadTokenGuard(decode)) return 
+    
+                    if(decode.role === Role.ADMIN) {
                         if(req.body.role) {
-                            return Promise.reject('Редактировать роль может только ADMIN')
-                        }                                 
-                        if(toNumber(user?.dataValues?.id) === toNumber(id)){
-                            return Promise.resolve(true)
-                        } else {
-                            return Promise.reject('Другого пользователя может редактировать только админ')
+                            if(!checkIsValidRole(req.body.role)) {
+                                return Promise.reject(`Неверная роль ${req.body.role}`)
+                            }
                         }
+                        return true
                     } else {
-                        return Promise.reject('Другого пользователя можт редактировать только админ')
+                        // role === USER
+                        if(toNumber(decode.id) === toNumber(id)) {
+                            const user = await User?.findOne({
+                                where: {
+                                    id
+                                }
+                            })
+                            if(!user?.dataValues?.id) {
+                                return Promise.resolve(`нет юзера с id ${id}`)
+                            }
+                            if(req.body.role) {
+                                return Promise.reject('Редактировать роль может только ADMIN')
+                            }                                 
+                            if(toNumber(user?.dataValues?.id) === toNumber(id)){
+                                return Promise.resolve(true)
+                            } else {
+                                return Promise.reject('Другого пользователя может редактировать только админ')
+                            }
+                        } else {
+                            return Promise.reject('Другого пользователя можт редактировать только админ')
+                        }
                     }
+                } catch (error) {
+                    return Promise.reject(error);
                 }
-            
             }),
             body('id').custom(id => {
                 return User?.findOne({

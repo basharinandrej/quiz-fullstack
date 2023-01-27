@@ -18,7 +18,7 @@ export const validation = {
             body('surname').isLength({min: 2}).withMessage({length: 'length > 1'}).trim(),
             body('email').custom(email => {
                 return User?.findOne({
-                    where: {email}
+                    where: {email} 
                 }).then((user) => {
                     if(user) {
                         return Promise.reject(`Пользователь с email - ${email} уже есть`)

@@ -44,7 +44,7 @@ class ServiceUser {
         const {accessToken, refreshToken} = serviceToken.generateTokens({...userDto})
         await serviceToken.saveToken(refreshToken, user.dataValues.id)
 
-        res.cookie('refreshToken', refreshToken, {httpOnly: true})
+        res.cookie('refreshToken', refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000,  httpOnly: true})
         res.send({
             accessToken,
             user: {
@@ -75,7 +75,7 @@ class ServiceUser {
                 { where: { id: candidate.id }}
             )
 
-            res.cookie('refreshToken', refreshToken, {httpOnly: true})
+            res.cookie('refreshToken', refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             res.json({
                 accessToken
             })
@@ -158,7 +158,7 @@ class ServiceUser {
         })
 
         result 
-            ? res.status(200).json('ok')
+            ? res.status(200).json('ok') 
             : res.status(500).json(result)
     }
 }

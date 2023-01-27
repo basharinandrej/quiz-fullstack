@@ -14,8 +14,8 @@ import {
 } from '#controllers/controller-user/types'
 import { isUserGuard } from '#guards'
 import {serviceToken} from '#services/service-token'
-import { Role } from '../../common/types/types'
-import { extractRefreshToken } from '../../common/utils/extractToken'
+import { Role } from '#common/types/types'
+import { extractRefreshToken } from '#common/utils/extractToken'
 import { UserDto } from '#dto/dto-user'
 import { StatisticsDto } from '#dto/dto-statistics'
 import { serviceStatistics } from '#services/service-statistics'
@@ -122,9 +122,12 @@ class ServiceUser {
             where: {id}
         })
 
-        result 
-            ? res.status(200).json(result)
-            : res.status(500).json(result)
+        if(result) {
+            res.clearCookie('refreshToken');
+            res.status(200).json('ok')
+        } else {
+            res.status(500).json(result)
+        }
     }
 
     async update(req: IRequestUpdateUser, res: Response) {

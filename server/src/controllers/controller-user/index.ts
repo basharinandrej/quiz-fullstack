@@ -1,4 +1,4 @@
-import {Response, Request, NextFunction} from 'express'
+import {Response, NextFunction} from 'express'
 import dotenv from 'dotenv';
 import { serviceUser } from '#services/service-user'
 import {

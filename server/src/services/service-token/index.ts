@@ -24,13 +24,16 @@ export class ServiceToken {
         return {accessToken, refreshToken}
     }
 
-    public validationToken(token: string, next: NextFunction) {
+    public validationToken(token: string, next?: NextFunction) {
 
         try {
             return jwt.verify(token, process.env.SECRET_KEY || '')
         } catch (error) {
             if(error instanceof Error) {
-                next(ApiError.unauthorized(error?.message))
+                next?.(ApiError.unauthorized(error?.message))
+                if(!next) {
+                    throw new Error(error.message) 
+                }
             }
         }
 

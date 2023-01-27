@@ -12,4 +12,10 @@ router.post('/',
 )
 router.get('/getOne', controllerResult.getOne)
 
+router.delete('/', 
+    validation.deleteChain(),
+    sendErrorsMiddleware,
+    controllerResult.delete
+)
+
 export const routerResult = router

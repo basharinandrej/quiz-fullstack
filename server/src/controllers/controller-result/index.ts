@@ -1,6 +1,10 @@
 import {Response, NextFunction} from 'express'
 import { serviceResult } from '#services/service-result'
-import { IRequestResultGetOne, IRequestResultCreate } from './types'
+import { 
+    IRequestResultDelete,
+    IRequestResultGetOne, 
+    IRequestResultCreate 
+} from './types'
 
 class ControllerResult {
     async create(req: IRequestResultCreate, res: Response, next: NextFunction) {
@@ -9,6 +13,10 @@ class ControllerResult {
 
     async getOne(req: IRequestResultGetOne, res: Response, next: NextFunction) {
         serviceResult.getOne(req, res, next)
+    }
+
+    async delete(req: IRequestResultDelete, res: Response, next: NextFunction) {
+        serviceResult.delete(req, res, next)
     }
 }
 

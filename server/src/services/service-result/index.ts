@@ -1,6 +1,10 @@
 import {Response, NextFunction} from 'express'
 import { Result } from '#models/index'
-import { IRequestResultCreate, IRequestResultGetOne } from '#controllers/controller-result/types'
+import { 
+    IRequestResultCreate, 
+    IRequestResultGetOne,
+    IRequestResultDelete
+} from '#controllers/controller-result/types'
 import { serviceStatistics } from '#services/service-statistics'
 import { ApiError } from '#middlewares/api-error-middleware'
 import { ResultModel } from '#models/types'
@@ -60,6 +64,25 @@ class ServiceResult {
                 res.send(result)
             }
         } catch (error) {
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
+        }
+    }
+
+    async delete(req: IRequestResultDelete, res: Response, next: NextFunction) {
+        const {id} = req.query
+
+        try {
+            const result = await Result?.destroy({
+                where: {id}
+            })
+
+            result 
+                ? res.sendStatus(200).send(result)
+                : res.sendStatus(500).send(result)
+        } catch (error) {
+            console.log(error)
             if(error instanceof Error) {
                 next(ApiError.internal(error.message))
             }

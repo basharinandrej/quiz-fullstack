@@ -1,8 +1,9 @@
-import { body, header } from 'express-validator';
-import { User } from '#models/index'
+import { body, header, query } from 'express-validator';
+import { User, Result } from '#models/index'
 import { isPayloadTokenGuard} from '#guards'
 import {serviceToken} from '#services/service-token'
 import {extractAccessToken} from '#common/utils/extractToken'
+import {Role} from '#common/types/types'
 
 
 export const validation = {
@@ -14,9 +15,9 @@ export const validation = {
                 try {
                     const decode = serviceToken.validationToken(token)
                     if(isPayloadTokenGuard(decode)){
-                        return Promise.resolve(false)
-                    } else {
                         return Promise.resolve(true)
+                    } else {
+                        return Promise.reject(false)
                     }
                 } catch (error) {
                     return Promise.reject(error);
@@ -36,6 +37,43 @@ export const validation = {
                     }
                 });
               }),
+        ]
+    },
+
+    deleteChain() {
+        return [
+            header('authorization').custom((value) => {
+                const token = extractAccessToken(value)
+
+                try {
+                    const decode = serviceToken.validationToken(token)
+                    if(isPayloadTokenGuard(decode)){
+                        if(decode.role === Role.ADMIN) {
+                            return Promise.resolve(true)
+                        } else {
+                            return Promise.reject('Удалять result может только ADMIN')
+
+                        }
+                    } else {
+                        return Promise.reject(false)
+                    }
+                } catch (error) {
+                    if(error instanceof Error) {
+                        return Promise.reject(error.message);
+                    }
+                } 
+            }),
+            query('id').custom( async (id) => {
+                if(!id) return
+
+                return await Result?.findOne({
+                    where: {id}
+                }).then((result) => {
+                    if(!result?.dataValues.id) {
+                        return Promise.reject(`Result с id - ${id} нет`)
+                    }
+                })
+            }),
         ]
     }
 }

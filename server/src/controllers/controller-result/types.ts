@@ -7,7 +7,6 @@ interface IBodyResult {
     quizId: number
     userId: number
 }
-
 export interface IRequestResultCreate extends Request<Record<string, any> | undefined, Record<string, any> | undefined, IBodyResult> {}
 
 
@@ -15,5 +14,10 @@ interface IQueryResult {
     userId: number
     quizId: number
 }
-
 export interface IRequestResultGetOne extends Request<unknown, unknown, unknown, IQueryResult> {}
+
+
+interface IQueryDeleteResult {
+    id: number
+}
+export interface IRequestResultDelete extends Request<unknown, unknown, unknown, IQueryDeleteResult> {}

@@ -19,7 +19,8 @@ const Quiz = instanceSequelize?.define<QuizModel>('quiz', {
     },
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        onDelete: 'CASCADE',
     },
     recipientId: {
         type: DataTypes.INTEGER,

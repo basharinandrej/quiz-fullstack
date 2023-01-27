@@ -43,6 +43,20 @@ export const validation = {
         ]
     },
 
+    logoutChains() {
+        return [
+            query('id').custom(id => {
+                return User?.findOne({
+                    where: {id}
+                }).then((user) => {
+                    if(!user) {
+                        return Promise.reject(`User'a с id - ${id} нет`)
+                    }
+                })
+            })
+        ]
+    },
+
     getOneChains() {
         return [
             query('id').notEmpty().withMessage('отсутствует id')

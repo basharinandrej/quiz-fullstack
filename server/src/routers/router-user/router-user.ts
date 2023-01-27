@@ -38,6 +38,8 @@ router.put('/',
 )
 
 router.get('/logout',
+    validation.logoutChains(),
+    sendErrorsMiddleware,
     controllerUser.logout
 )
 

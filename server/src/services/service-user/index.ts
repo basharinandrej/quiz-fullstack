@@ -150,7 +150,7 @@ class ServiceUser {
         })
 
         result 
-            ? res.status(200).json(result)
+            ? res.status(200).json('ok')
             : res.status(500).json(result)
     }
 }

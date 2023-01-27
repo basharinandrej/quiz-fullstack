@@ -2,13 +2,14 @@ import { body, header } from 'express-validator';
 import { User } from '#models/index'
 import { isPayloadTokenGuard} from '#guards'
 import {serviceToken} from '#services/service-token'
+import {extractAccessToken} from '#common/utils/extractToken'
 
 
 export const validation = {
     createChain() {
         return [
-            header('authorization').custom((value, {req}) => {
-                const token = value.split(' ')[1]
+            header('authorization').custom((value) => {
+                const token = extractAccessToken(value)
 
                 try {
                     const decode = serviceToken.validationToken(token)

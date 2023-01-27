@@ -1,9 +1,10 @@
 import { body, query, header } from 'express-validator';
 import { IQueryQuizAll } from '#controllers/controller-quiz/types'
-import jwt from 'jsonwebtoken';
 import { isPayloadTokenGuard} from '#guards'
 import { Quiz } from '#models/index'
 import { Role } from 'common/types/types'
+import {extractAccessToken} from '#common/utils/extractToken'
+import {serviceToken} from '#services/service-token'
 
 
 export const validation = {
@@ -39,28 +40,31 @@ export const validation = {
                 })
             }),
             header('authorization').custom((value, {req}) => {
-                const token = value.split(' ')[1]
+                const token = extractAccessToken(value)
                 const {id: quizId} = req.query as {id: number}
-                if(!token) Promise.reject('Токена нет');
-    
-                const decode = jwt.verify(token, process.env.SECRET_KEY || '')
-                if(!isPayloadTokenGuard(decode)) return 
+                
+                try {
+                    const decode = serviceToken.validationToken(token)
+                    if(!isPayloadTokenGuard(decode)) return 
 
-                if(decode.role === Role.ADMIN) {
-                    return Promise.resolve(true)
-                } else {
-                    return Quiz?.findOne({
-                        where: {
-                            id: quizId
-                        }
-                    })
-                    .then((quizForDeleting) => {                                       
-                        if(quizForDeleting?.dataValues?.userId === decode.id) {
-                            return Promise.resolve(true)
-                        }else {
-                            return Promise.reject('quiz другого пользователя млжет удалить только ADMIN')
-                        }
-                    })
+                    if(decode.role === Role.ADMIN) {
+                        return Promise.resolve(true)
+                    } else {
+                        return Quiz?.findOne({
+                            where: {
+                                id: quizId
+                            }
+                        })
+                        .then((quizForDeleting) => {                                       
+                            if(quizForDeleting?.dataValues?.userId === decode.id) {
+                                return Promise.resolve(true)
+                            } else {
+                                return Promise.reject('quiz другого пользователя млжет удалить только ADMIN')
+                            }
+                        })
+                    }
+                } catch (error) {
+                    return Promise.reject(error);
                 }
             }),
         ]

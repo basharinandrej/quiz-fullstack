@@ -4,7 +4,6 @@ import { IRequestResultCreate, IRequestResultGetOne } from '#controllers/control
 import { serviceStatistics } from '#services/service-statistics'
 import { ApiError } from '#middlewares/api-error-middleware'
 import { ResultModel } from '#models/types'
-import { validationResult } from "express-validator";
 
 class ServiceResult {
     async create(req: IRequestResultCreate, res: Response, next: NextFunction) {
@@ -25,8 +24,6 @@ class ServiceResult {
                 userId
             })
 
-            //todo проверить если ли статистику у юзера, добавить флаг в токен что у юзера есть статистика
-            serviceStatistics.create(req, res, next);
             const updatedStatistics = serviceStatistics.update(req, res, next);
 
             updatedStatistics.then((statistic) => {

@@ -16,6 +16,8 @@ import { isUserGuard } from '#guards'
 import {serviceToken} from '#services/service-token'
 import { Role } from '../../common/types/types'
 import { UserDto } from '#dto/dto-user'
+import { StatisticsDto } from '#dto/dto-statistics'
+import { serviceStatistics } from '#services/service-statistics'
 
 class ServiceUser {
     async registration(req: IRequestRegistration, res: Response, next: NextFunction) {
@@ -35,6 +37,9 @@ class ServiceUser {
             next(ApiError.internal('Не удалось зарегистровать юзера'))
         }
         
+        const statistics = await serviceStatistics.create(user.id, res, next);
+        const statisticsDto = statistics && new StatisticsDto(statistics)
+
         const userDto = new UserDto({...req.body, id: user.dataValues.id})
         const {accessToken, refreshToken} = serviceToken.generateTokens({...userDto})
         await serviceToken.saveToken(refreshToken, user.dataValues.id)
@@ -44,6 +49,9 @@ class ServiceUser {
             accessToken,
             user: {
                 ...userDto
+            },
+            statistics: {
+                ...statisticsDto
             }
         })
     }
@@ -60,16 +68,16 @@ class ServiceUser {
         const isPasswordMatch = await bcrypt.compare(password, candidate.password)
         if(isPasswordMatch) {
             const userDto = new UserDto(candidate)
-            const {accessToken, refreshToken} = serviceToken.generateTokens(userDto)
+            const {accessToken, refreshToken} = serviceToken.generateTokens({...userDto})
 
             await Token?.update(
                 {refreshToken},
                 { where: { id: candidate.id }}
             )
 
+            res.cookie('refreshToken', refreshToken, {httpOnly: true})
             res.json({
-                accessToken,
-                refreshToken
+                accessToken
             })
         } else {
             return next(ApiError.forbidden('Неверный пароль'))

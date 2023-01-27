@@ -6,11 +6,7 @@ import { IRequestStatisticAll, IRequestStatisticCreate } from '#controllers/cont
 
 
 class ServiceStatistics {
-    async create(req: IRequestStatisticCreate, res: Response, next: NextFunction) {
-        const {
-            userId
-        } = req.body
-
+    async create(userId: number, res: Response, next: NextFunction) {
         const candadateStatistic = await Statistics?.findOne<StatisticsModel>({
             where: {
                 userId
@@ -27,7 +23,7 @@ class ServiceStatistics {
             totalQuestions: 0,
             userId
         })
-        res.send(statistics)
+        return statistics
     }
 
     async update(req: IRequestStatisticCreate, res: Response, next: NextFunction) {

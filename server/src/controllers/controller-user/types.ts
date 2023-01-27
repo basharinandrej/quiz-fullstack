@@ -44,6 +44,6 @@ export interface IRequestUpdateUser extends Request<
 
 
 interface IQueryLogoutUser extends Record<string, unknown>{
-    id: number,
+    authorization: string,
 }
-export interface IRequestLogoutUser extends Pick<Request<unknown, unknown, unknown, IQueryLogoutUser>, 'query'> {}
+export interface IRequestLogoutUser extends Pick<Request<unknown, unknown, unknown, IQueryLogoutUser>, 'headers'> {}

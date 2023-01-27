@@ -77,7 +77,7 @@ class ControllerUser {
 
     async logout(req: IRequestLogoutUser, res: Response, next: NextFunction) {
         try {
-            serviceUser.logout(req, res)
+            serviceUser.logout(req, res, next)
         } catch (error) {
             if(error instanceof Error) {
                 next(ApiError.internal(error.message))

@@ -15,6 +15,7 @@ import {
 import { isUserGuard } from '#guards'
 import {serviceToken} from '#services/service-token'
 import { Role } from '../../common/types/types'
+import { extractRefreshToken } from '../../common/utils/extractToken'
 import { UserDto } from '#dto/dto-user'
 import { StatisticsDto } from '#dto/dto-statistics'
 import { serviceStatistics } from '#services/service-statistics'
@@ -70,11 +71,8 @@ class ServiceUser {
             const userDto = new UserDto(candidate)
             const {accessToken, refreshToken} = serviceToken.generateTokens({...userDto})
 
-            await Token?.update(
-                {refreshToken},
-                { where: { id: candidate.id }}
-            )
-
+            await serviceToken.saveToken(refreshToken,  candidate.id)
+    
             res.cookie('refreshToken', refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             res.json({
                 accessToken
@@ -150,16 +148,20 @@ class ServiceUser {
         }
     }
 
-    async logout(req: IRequestLogoutUser, res: Response) {
-        const {id} = req.query
+    async logout(req: IRequestLogoutUser, res: Response, next: NextFunction) {
+        const refreshToken = req.headers.cookie && extractRefreshToken(req.headers.cookie)
+        if(!refreshToken) return
 
-        const result = Token?.destroy({
-            where: {userId: id}
-        })
+        refreshToken && serviceToken.validationToken(refreshToken, next)
+  
+        const result = await serviceToken.dropToken(refreshToken)
 
-        result 
-            ? res.status(200).json('ok') 
-            : res.status(500).json(result)
+        if(result) {
+            res.clearCookie('refreshToken');
+            res.status(200).json('ok')
+        } else {
+            res.status(500).json(result)
+        }
     }
 }
 

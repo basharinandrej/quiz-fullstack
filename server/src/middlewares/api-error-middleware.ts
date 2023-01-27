@@ -49,4 +49,11 @@ export class ApiError extends Error {
             return new ApiError(500, error)
         }
     }
+    static unauthorized(error?: ValidationError[] | string) {
+        if(Array.isArray(error)) {
+            return new ApiError(401, '', error)
+        } else if(typeof error === 'string') {
+            return new ApiError(401, error)
+        }
+    }
 }

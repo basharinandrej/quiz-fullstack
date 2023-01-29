@@ -7,6 +7,7 @@ import { Response } from 'express'
 class ServiceAnswer {
     async create(req: IRequestCreateAnswer, res: Response) {
         const {text, questionId, isRightAnswer} = req.body
+        
         const result = await Answer?.create<AnswerModel>({
             text,
             questionId,

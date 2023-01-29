@@ -8,13 +8,13 @@ class ServiceAnswer {
     async create(req: IRequestCreateAnswer, res: Response) {
         const {text, questionId, isRightAnswer} = req.body
 
-        const result = await Answer?.create<AnswerModel>({
+        const answer = await Answer?.create<AnswerModel>({
             text,
             questionId,
             isRightAnswer
         })
-
-        res.send(result)
+        if(!answer) return
+        res.send({...new AnswerDto(answer)})
     }
 
     async update(req: IRequestUpdateAnswer, res: Response) {

@@ -1,7 +1,8 @@
-import {IRequestCreateQuestion, IRequestUpdateQuestion} from '#controllers/controller-question/types'
+import {IRequestCreateQuestion, IRequestUpdateQuestion, IRequestGetQuestions} from '#controllers/controller-question/types'
 import { Response } from 'express'
 import { Question } from '#models/index';
 import {QuestionDto} from '#dto/dto-question'
+import { QuestionModel } from '#models/types'
 
 
 class ServiceQuestion {
@@ -25,6 +26,29 @@ class ServiceQuestion {
         })
 
         res.send(result)
+    }
+
+    async getAll(req: IRequestGetQuestions, res: Response) {
+        const {limit = 10, offset = 0, quizId} = req.query
+
+        let answers: { rows: QuestionModel[]; count: number; } | undefined | null = null
+        if(quizId) {
+            answers = await Question?.findAndCountAll({
+                limit, offset, where: {quizId}
+            })
+        } else {
+            answers = await Question?.findAndCountAll({
+                limit, offset
+            })
+        }
+
+        const answersDto = answers?.rows.map((answer) => {
+            return  {...new QuestionDto(answer)}
+        })
+        res.send({
+            ...answers,
+            rows: answersDto
+        })
     }
 }
 

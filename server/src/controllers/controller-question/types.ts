@@ -17,3 +17,10 @@ export interface IBodyUpdateQuestion {
 export interface IRequestUpdateQuestion extends Request<EmptyType, EmptyType, IBodyUpdateQuestion> {}
 
 
+
+export interface IQueryGetQuestion {
+    limit?: number,
+    offset?: number,
+    quizId?: number
+}
+export interface IRequestGetQuestions extends Request<EmptyType, EmptyType, EmptyType, IQueryGetQuestion> {}

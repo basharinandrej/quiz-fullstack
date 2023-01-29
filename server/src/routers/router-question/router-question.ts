@@ -15,5 +15,8 @@ router.put('/',
     controllerQuestion.update
 )
 
+router.get('/',
+    controllerQuestion.getAll
+)
 
 export const routerQuestion = router

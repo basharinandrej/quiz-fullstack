@@ -20,7 +20,7 @@ export const createAnswers: ICreateAnswers = async (res, answers, questionId, ne
         let totalCreatedAnswers: AnswerModel[] = []
         return new Promise((resolve) => {
             answers.forEach( async (answer) => {
-                Answer?.create({
+                Answer?.create<AnswerModel>({
                     text: answer.text,
                     questionId: questionId,
                     isRightAnswer: answer.isRightAnswer

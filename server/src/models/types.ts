@@ -1,4 +1,4 @@
-import {Role} from '../common/types/types'
+import {Role} from '#common/types/types'
 import { Model, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize'
 
 

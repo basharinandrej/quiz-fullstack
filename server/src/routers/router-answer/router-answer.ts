@@ -11,5 +11,14 @@ router.post('/',
     controllerAnswer.create
 )
 
+router.put('/',
+    controllerAnswer.update
+)
+
+router.get('/',
+    controllerAnswer.getAll
+)
+
+
 
 export const routerAnswer = router

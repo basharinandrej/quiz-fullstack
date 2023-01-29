@@ -8,7 +8,8 @@ import {
     IRequestRegistration,
     IRequestDeleteUser,
     IRequestUpdateUser,
-    IRequestLogoutUser
+    IRequestLogoutUser,
+    IRequestRefreshUser
 } from './types'
 import { ApiError } from '#middlewares/api-error-middleware';
 
@@ -78,6 +79,16 @@ class ControllerUser {
     async logout(req: IRequestLogoutUser, res: Response, next: NextFunction) {
         try {
             serviceUser.logout(req, res, next)
+        } catch (error) {
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
+        }
+    }
+
+    async refresh(req: IRequestRefreshUser, res:Response, next: NextFunction) {
+        try {
+            serviceUser.refresh(req, res, next)
         } catch (error) {
             if(error instanceof Error) {
                 next(ApiError.internal(error.message))

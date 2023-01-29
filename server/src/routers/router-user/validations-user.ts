@@ -57,6 +57,22 @@ export const validation = {
         ]
     },
 
+    refreshChains() {
+        return [
+            cookie('refreshToken').custom( async (token, {req}: Meta) => {
+
+                try {
+                    const decode = serviceToken.validationToken(token)
+                    if(!isPayloadTokenGuard(decode)) return
+                } catch (error) {
+                    if(error instanceof Error) {
+                        return Promise.reject({status:401, error: error.message});
+                    }
+                }            
+            }),
+        ]
+    },
+
     getOneChains() {
         return [
             query('id').notEmpty().withMessage('отсутствует id')

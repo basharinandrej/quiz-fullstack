@@ -43,4 +43,10 @@ router.get('/logout',
     controllerUser.logout
 )
 
+router.post('/refresh',
+    validation.refreshChains(),
+    sendErrorsMiddleware,
+    controllerUser.refresh
+)
+
 export const routerUser = router

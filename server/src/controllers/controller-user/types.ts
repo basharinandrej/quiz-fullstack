@@ -54,3 +54,10 @@ interface IQueryLogoutUser extends Record<string, unknown>{
     authorization: string,
 }
 export interface IRequestLogoutUser extends Pick<Request<EmptyType, EmptyType, EmptyType, IQueryLogoutUser>, 'headers'> {}
+
+
+
+interface IQueryRefreshUser extends Record<string, unknown>{
+    authorization: string,
+}
+export interface IRequestRefreshUser extends Pick<Request<EmptyType, EmptyType, EmptyType, IQueryRefreshUser>, 'headers'> {}

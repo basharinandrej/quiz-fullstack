@@ -1,4 +1,4 @@
-import {User, Result, Token} from '#models/index'
+import {User, Result} from '#models/index'
 import {UserModel} from '#models/types'
 import { ApiError } from '#middlewares/api-error-middleware'
 import bcrypt from 'bcrypt'
@@ -10,7 +10,8 @@ import {
     IRequestRegistration,
     IRequestDeleteUser,
     IRequestUpdateUser,
-    IRequestLogoutUser
+    IRequestLogoutUser,
+    IRequestRefreshUser
 } from '#controllers/controller-user/types'
 import { isUserGuard } from '#guards'
 import {serviceToken} from '#services/service-token'
@@ -19,6 +20,7 @@ import { extractRefreshToken } from '#common/utils/extractToken'
 import { UserDto } from '#dto/dto-user'
 import { StatisticsDto } from '#dto/dto-statistics'
 import { serviceStatistics } from '#services/service-statistics'
+import { IPayloadToken } from '#services/service-user/types';
 
 class ServiceUser {
     async registration(req: IRequestRegistration, res: Response, next: NextFunction) {
@@ -165,6 +167,33 @@ class ServiceUser {
         } else {
             res.status(500).json(result)
         }
+    }
+
+    async refresh(req: IRequestRefreshUser, res: Response, next: NextFunction) {
+        const refreshToken = req.headers.cookie && extractRefreshToken(req.headers.cookie)
+        if(!refreshToken) return
+
+        try {
+            const decode = serviceToken.validationToken(refreshToken, next) as IPayloadToken
+            const user = await User?.findOne({where: {id: decode?.id}})
+            await serviceToken.dropToken(refreshToken)
+
+            if(!user) return
+            
+            const {accessToken, refreshToken: newRefreshToken, } = serviceToken.generateTokens({...new UserDto(user.dataValues)})
+            
+
+            res.cookie('refreshToken', newRefreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+            res.send({
+                accessToken, 
+                user: {... new UserDto(user)}
+            })
+        } catch (error) {
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
+        }
+
     }
 }
 

@@ -2,6 +2,8 @@ import { Request } from "express";
 import {AnswerModel, QuestionModel} from '#models/types'
 import * as core from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
+import {EmptyType} from '#common/types/types'
+
 export interface IReqCreateQuiz extends IReqQuestions {
     title: string
     timer?: number
@@ -24,15 +26,15 @@ interface IHint {
 
 export interface IRequestQuizCreate extends Request<
     core.ParamsDictionary, 
-    Record<string, any> | undefined,
+    EmptyType,
     IReqCreateQuiz,
     ParsedQs
 > {}
 
 export interface IRequestQuizDelete extends Request<
     core.ParamsDictionary, 
-    Record<string, any> | undefined,
-    Record<string, any> | undefined,
+    EmptyType,
+    EmptyType,
     {id: string}
 > {}
 

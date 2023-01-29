@@ -1,4 +1,5 @@
 import { Request } from "express";
+import {EmptyType} from '#common/types/types'
 
 export interface IQueryQuizAllByUserId {
     recipientId?:number, 
@@ -7,11 +8,12 @@ export interface IQueryQuizAllByUserId {
     offset?: number
 }
 
-export interface IRequestQuizAllByUserId extends Request<Record<string, any> | undefined, Record<string, any> | undefined, Record<string, any> | undefined, IQueryQuizAllByUserId> {}
+export interface IRequestQuizAllByUserId extends Request<EmptyType, EmptyType, EmptyType, IQueryQuizAllByUserId> {}
+
 
 export interface IQueryQuizzesAll {
     limit?: number,
     offset?: number
 }
 
-export interface IRequestQuizzesAll extends Request<Record<string, any> | undefined, Record<string, any> | undefined, Record<string, any> | undefined, IQueryQuizzesAll> {}
+export interface IRequestQuizzesAll extends Request<EmptyType, EmptyType, EmptyType, IQueryQuizzesAll> {}

@@ -8,4 +8,4 @@ export interface IBodyCreateAnswer {
 }
 
 
-export interface IRequestCreateAnswer extends Request<EmptyType, EmptyType, IBodyCreateAnswer, EmptyType> {}
+export interface IRequestCreateAnswer extends Request<EmptyType, EmptyType, IBodyCreateAnswer> {}

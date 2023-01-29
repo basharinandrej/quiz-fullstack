@@ -20,7 +20,9 @@ export const validation = {
                         return Promise.reject(false)
                     }
                 } catch (error) {
-                    return Promise.reject(error);
+                    if(error instanceof Error) {
+                        return Promise.reject({status:401, error: error.message});
+                    }
                 }    
 
             }),
@@ -59,7 +61,7 @@ export const validation = {
                     }
                 } catch (error) {
                     if(error instanceof Error) {
-                        return Promise.reject(error.message);
+                        return Promise.reject({status:401, error: error.message});
                     }
                 } 
             }),

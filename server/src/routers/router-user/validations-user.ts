@@ -105,7 +105,9 @@ export const validation = {
                         }
                     }
                 } catch (error) {
-                    return Promise.reject(error);
+                    if(error instanceof Error) {
+                        return Promise.reject({status:401, error: error.message});
+                    }
                 }            
             }),
         ]
@@ -154,7 +156,9 @@ export const validation = {
                         }
                     }
                 } catch (error) {
-                    return Promise.reject(error);
+                    if(error instanceof Error) {
+                        return Promise.reject({status:401, error: error.message});
+                    }
                 }
             }),
             body('id').custom(id => {

@@ -28,6 +28,7 @@ router.put('/',
 router.delete('/',
     validation.deleteChain(),
     sendErrorsMiddleware,
-    controllerQuiz.delete)
+    controllerQuiz.delete
+)
 
 export const routerQuiz = router

@@ -6,7 +6,13 @@ export const sendErrorsMiddleware = (req: any, res: any, next: NextFunction) => 
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-        return next(ApiError.badRequest(errors.array()))
+        const isUnautorizationError = errors.mapped()?.authorization?.msg?.status === 401 || false
+
+        if(isUnautorizationError) {
+            return next(ApiError.unauthorized(errors.array()))
+        } else {
+            return next(ApiError.badRequest(errors.array()))
+        }
     } else {
         next()
     }

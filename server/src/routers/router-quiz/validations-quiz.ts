@@ -17,17 +17,19 @@ export const validation = {
                     serviceToken.validationToken(token)
                     return Promise.resolve(true);
                 } catch (error) {
-                    console.log('error', error)
-                    return Promise.reject(error);
+                    if(error instanceof Error) {
+                        return Promise.reject({status:401, error: error.message});
+                    }
                 }
             }),
             query().custom((_, {req}) => {
                 const { authorId, recipientId } = req.query as IQueryQuizAllByUserId;
-    
-                if(!recipientId && !authorId) {
-                    throw new Error('Одно из полей обязательно: recipientId, authorId');
+
+                if(!(recipientId || authorId)) {
+                    return Promise.reject('Одно из query полей authorId / recipientId должно быть');
+                } else {
+                    return Promise.resolve(true);
                 }
-                return true
             })
         ]
     },
@@ -75,7 +77,9 @@ export const validation = {
                         })
                     }
                 } catch (error) {
-                    return Promise.reject(error);
+                    if(error instanceof Error) {
+                        return Promise.reject({status:401, error: error.message});
+                    }
                 }
             }),
         ]

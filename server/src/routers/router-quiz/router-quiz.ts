@@ -8,7 +8,7 @@ const router = Router()
 router.get('/', 
     validation.getAllChain(),
     sendErrorsMiddleware,
-    controllerQuiz.quizAll
+    controllerQuiz.quizzesAllByUserId
 )
 
 router.post('/',

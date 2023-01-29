@@ -6,49 +6,42 @@ import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '#guards'
 import { IRequestQuizCreate, IRequestQuizDelete } from './types'
 import jwt from 'jsonwebtoken';
-import { validationResult } from "express-validator";
 import { ApiError } from "#middlewares/api-error-middleware";
 
 class ServiceQuiz {
-    async getQuizzesAll(req: IRequestQuizAll, res: Response, next: NextFunction) {
-        const { recipientId, authorId } = req.query
-        const token = req.headers.authorization?.split(' ')[1]
+    async getQuizzesAllByUserId(req: IRequestQuizAll, res: Response, next: NextFunction) {
+        const { recipientId, authorId, limit = 10, offset = 0 } = req.query
 
-        token && jwt.verify(token, process.env.SECRET_KEY || '', async (err, decode: any) => {
-            if(err instanceof Error) {
-                return next(ApiError.internal(err?.message))
-            }
-            if(!isPayloadTokenGuard(decode)) {
-                return next(ApiError.badRequest(`Не корректный payload у токена ${JSON.stringify(decode)}`))
-            } 
-            
-            if(recipientId) {
-                const quizzes = await Quiz?.findAndCountAll({
-                    where: {recipientId},
-                    include: [
-                        {model: Question, 
-                            include: [
-                                {model: Answer},
-                                {model: Hint}
-                            ]
-                        },
-                    ]
-                })
-                res.send(quizzes)
-            } else if(authorId) {
-                const quizzes = await Quiz?.findAndCountAll({
-                    where: {userId: authorId},
-                    include: [
-                        {model: Question, 
-                            include: [
-                                {model: Answer}, {model: Hint}
-                            ]
-                        },
-                    ]
-                })
-                res.send(quizzes)
-            } 
-        })
+        if(recipientId) {
+            const quizzes = await Quiz?.findAndCountAll({
+                where: {recipientId},
+                limit,
+                offset,
+                include: [
+                    {model: Question, 
+                        include: [
+                            {model: Answer},
+                            {model: Hint}
+                        ]
+                    },
+                ]
+            })
+            res.send(quizzes)
+        } else if(authorId) {
+            const quizzes = await Quiz?.findAndCountAll({
+                where: {userId: authorId},
+                limit,
+                offset,
+                include: [
+                    {model: Question, 
+                        include: [
+                            {model: Answer}, {model: Hint}
+                        ]
+                    },
+                ]
+            })
+            res.send(quizzes)
+        }
     }
 
     async createQuiz(req: IRequestQuizCreate, res: Response, next: NextFunction) {

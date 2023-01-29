@@ -10,6 +10,17 @@ import {serviceToken} from '#services/service-token'
 export const validation = {
     getAllChain() {
         return [
+            header('authorization').custom((value, {req}) => {
+                const token = extractAccessToken(value)
+
+                try {
+                    serviceToken.validationToken(token)
+                    return Promise.resolve(true);
+                } catch (error) {
+                    console.log('error', error)
+                    return Promise.reject(error);
+                }
+            }),
             query().custom((_, {req}) => {
                 const { authorId, recipientId } = req.query as IQueryQuizAll;
     

@@ -1,5 +1,5 @@
 import { body, query, header } from 'express-validator';
-import { IQueryQuizAll } from '#controllers/controller-quiz/types'
+import { IQueryQuizAllByUserId } from '#controllers/controller-quiz/types'
 import { isPayloadTokenGuard} from '#guards'
 import { Quiz } from '#models/index'
 import { Role } from 'common/types/types'
@@ -22,7 +22,7 @@ export const validation = {
                 }
             }),
             query().custom((_, {req}) => {
-                const { authorId, recipientId } = req.query as IQueryQuizAll;
+                const { authorId, recipientId } = req.query as IQueryQuizAllByUserId;
     
                 if(!recipientId && !authorId) {
                     throw new Error('Одно из полей обязательно: recipientId, authorId');

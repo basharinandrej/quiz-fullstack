@@ -1,15 +1,31 @@
 import { Response, NextFunction } from "express";
 import { Quiz, User, Question, Answer, Hint } from '#models/index'
 import { QuestionModel, QuizModel, AnswerModel } from '#models/types'
-import { IRequestQuizAll } from '#controllers/controller-quiz/types'
+import { 
+    IRequestQuizAllByUserId,
+    IRequestQuizzesAll
+} from '#controllers/controller-quiz/types'
 import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '#guards'
 import { IRequestQuizCreate, IRequestQuizDelete } from './types'
 import jwt from 'jsonwebtoken';
 import { ApiError } from "#middlewares/api-error-middleware";
+import {QuizDto} from '#dto/dto-quiz'
 
 class ServiceQuiz {
-    async getQuizzesAllByUserId(req: IRequestQuizAll, res: Response, next: NextFunction) {
+    async getAllQuizzes(req: IRequestQuizzesAll, res: Response) {
+        const { limit = 10, offset = 0 } = req.query
+        const quizzes = await Quiz?.findAndCountAll({
+            limit,
+            offset
+        })
+        const quizzesDto = quizzes?.rows?.map((quiz) => ({...new QuizDto(quiz)}))
+        res.send({
+            ...quizzes,
+            rows: quizzesDto
+        })
+    }
+    async getQuizzesAllByUserId(req: IRequestQuizAllByUserId, res: Response, next: NextFunction) {
         const { recipientId, authorId, limit = 10, offset = 0 } = req.query
 
         if(recipientId) {

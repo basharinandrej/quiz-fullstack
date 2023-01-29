@@ -5,10 +5,14 @@ import { sendErrorsMiddleware } from '#middlewares/send-errors-middleware'
 
 const router = Router()
 
-router.get('/', 
+router.get('/getByUserId', 
     validation.getAllChain(),
     sendErrorsMiddleware,
     controllerQuiz.quizzesAllByUserId
+)
+
+router.get('/getAllQuizzes', 
+    controllerQuiz.getAllQuizzes
 )
 
 router.post('/',

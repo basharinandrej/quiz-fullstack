@@ -1,11 +1,20 @@
 import { Response, NextFunction} from "express";
 import {serviceQuiz} from '#services/service-quiz'
-import { IRequestQuizAll } from './types'
+import { IRequestQuizAllByUserId, IRequestQuizzesAll } from './types'
 import { IRequestQuizCreate, IRequestQuizDelete } from '#services/service-quiz/types'
 import { ApiError } from "#middlewares/api-error-middleware";
 
 class ControllerQuiz {
-    async quizzesAllByUserId(req: IRequestQuizAll, res: Response, next: NextFunction) {
+    async getAllQuizzes(req: IRequestQuizzesAll, res: Response, next: NextFunction) {
+        try {
+            serviceQuiz.getAllQuizzes(req, res)
+        } catch (error) {
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
+        }
+    }
+    async quizzesAllByUserId(req: IRequestQuizAllByUserId, res: Response, next: NextFunction) {
         try {
             serviceQuiz.getQuizzesAllByUserId(req, res, next)
         } catch (error) {

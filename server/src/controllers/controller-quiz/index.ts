@@ -1,6 +1,6 @@
 import { Response, NextFunction} from "express";
 import {serviceQuiz} from '#services/service-quiz'
-import { IRequestQuizAllByUserId, IRequestQuizzesAll } from './types'
+import { IRequestQuizAllByUserId, IRequestQuizzesAll, IRequestUpdateQuiz } from './types'
 import { IRequestQuizCreate, IRequestQuizDelete } from '#services/service-quiz/types'
 import { ApiError } from "#middlewares/api-error-middleware";
 
@@ -35,6 +35,16 @@ class ControllerQuiz {
     async delete(req: IRequestQuizDelete, res: Response, next: NextFunction) {
         try {
             serviceQuiz.deleteQuiz(req, res, next)
+        } catch (error) {
+            if(error instanceof Error) {
+                next(ApiError.internal(error.message))
+            }
+        }
+    }
+
+    async update(req: IRequestUpdateQuiz, res: Response, next: NextFunction) {
+        try {
+            serviceQuiz.updateQuiz(req, res)
         } catch (error) {
             if(error instanceof Error) {
                 next(ApiError.internal(error.message))

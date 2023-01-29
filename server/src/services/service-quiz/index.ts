@@ -3,7 +3,8 @@ import { Quiz, User, Question, Answer, Hint } from '#models/index'
 import { QuestionModel, QuizModel, AnswerModel } from '#models/types'
 import { 
     IRequestQuizAllByUserId,
-    IRequestQuizzesAll
+    IRequestQuizzesAll,
+    IRequestUpdateQuiz
 } from '#controllers/controller-quiz/types'
 import { createAnswers } from './utils'
 import { isPayloadTokenGuard, isUserGuard, isQuizGuard, isQuestionGuard, isAnswerGuard } from '#guards'
@@ -191,6 +192,15 @@ class ServiceQuiz {
         result 
             ? res.status(200).json(result)
             : res.status(505).json(result)
+    }
+
+    async updateQuiz(req: IRequestUpdateQuiz, res: Response) {
+        const {id, title, timer, userId, recipientId} = req.body
+        const result = await Quiz?.update(
+            {title, timer, userId, recipientId},
+            {where: {id}
+        })
+        res.send(result)
     }
 }
 

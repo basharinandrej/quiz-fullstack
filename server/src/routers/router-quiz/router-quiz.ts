@@ -21,6 +21,10 @@ router.post('/',
     controllerQuiz.create
 )
 
+router.put('/',
+    controllerQuiz.update
+)
+
 router.delete('/',
     validation.deleteChain(),
     sendErrorsMiddleware,

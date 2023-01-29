@@ -8,3 +8,12 @@ export interface IBodyCreateQuestion {
 export interface IRequestCreateQuestion extends Request<EmptyType, EmptyType, IBodyCreateQuestion> {}
 
 
+
+export interface IBodyUpdateQuestion {
+    id: number,
+    text?: string,
+    quizId?: number,
+}
+export interface IRequestUpdateQuestion extends Request<EmptyType, EmptyType, IBodyUpdateQuestion> {}
+
+

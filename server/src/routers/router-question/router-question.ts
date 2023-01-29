@@ -11,5 +11,9 @@ router.post('/',
     controllerQuestion.create
 )
 
+router.put('/',
+    controllerQuestion.update
+)
+
 
 export const routerQuestion = router

@@ -18,7 +18,7 @@ export class ServiceToken {
     }
 
     public generateTokens(payloadToken: IPayloadToken) {
-        const accessToken = this.createToken(payloadToken, '30s')
+        const accessToken = this.createToken(payloadToken, '30m')
         const refreshToken = this.createToken(payloadToken, '30d')
     
         return {accessToken, refreshToken}
